@@ -1,8 +1,13 @@
-// Comment: Triangle
+// Demo for startPath
 
-triangle
-gridOn
-showTurtle
+startPath 
+
+triangle 
+
+fillPath 
+
+
+// Comment: Triangle
 
 LEARN Triangle [
     forward 30
@@ -12,4 +17,9 @@ LEARN Triangle [
     forward 30
     right 120
 ]
+
+
+
+
+
 

@@ -64,7 +64,17 @@ void stateManagement() {
       saveFrame(savingFramesFolder+"t-######.jpg");
     }
     popMatrix();
-    // status bar (HUD) 
+
+    // show all path Recording Shapes ---
+    if (hmPathRecordingShapes!=null && !t.suppressPath ) {
+      // Using an enhanced loop to iterate over each entry in the hashmap 
+      for (Map.Entry me : hmPathRecordingShapes.entrySet()) {
+        PShape s = (PShape) me.getValue();
+        shape(s, 0, 0);
+      }//for
+    }//if
+
+    // status bar (HUD) ---  
     statusBar(); 
     break;    
 
@@ -147,7 +157,9 @@ void stateManagement() {
 
     fill(0);
     textSize(24); 
-    text("Help for Turtle Script", 17, 35); 
+    text("Help for Turtle Script", 17, 35);
+    textSize(14); 
+    text(versionString, width-textWidth(versionString)-20, 55);
 
     statusBarText = "Help MODE. Use Scrollbarbuttons and Mouse Wheel to scroll. Space Bar to go back. ";
 
@@ -272,7 +284,7 @@ void stateManagement() {
   } //switch
 } //func 
 
-// ------------------------------------------
+// ---------------------------------------------------------------------------
 
 void handleStateEdit() {
 
@@ -308,55 +320,72 @@ void handleStateEdit() {
   // help for the current line in the editor 
   textSize(14); 
   fill(0);
-  text("Help for the current line ("
+  //text("Help for the current line ("
+  //  +tbox1.currentLine
+  //  +"):\n"
+  //  +helpTextCmd
+  //  +"\n", 
+  //  530, 155, width-720, 555);
+
+  tboxEditHelp1.initText("Help for the current line (line "
     +tbox1.currentLine
     +"):\n"
     +helpTextCmd
-    +"\n", 
-    530, 155, width-720, 555);
+    +"\n");
+  tboxEditHelp1.display(); 
 
   // Arrow right 
+  // * from editor box (right side) to  tboxEditHelp1
   fill(0); 
   stroke(0); 
   textSize(14); 
   textAlign(LEFT, BASELINE); 
-  textArrowRight(tbox1.x+tbox1.w+27, 165, 
-    510, 165); 
+  textArrowRight(tbox1.x+tbox1.w+27, tboxEditHelp1.y+17, 
+    tboxEditHelp1.x-20, tboxEditHelp1.y+17); 
 
   // the command roll 
   commandRoll.display(); 
 
   // Arrow left 
+  // * from commandRoll to editor box (right side) 
   fill(0); 
   stroke(0); 
   textSize(14); 
   textAlign(LEFT, BASELINE); 
-  textArrowLeft(commandRoll.x-17, 290, 
-    tbox1.x+tbox1.w+27, 290);
+  textArrowLeft(commandRoll.x-17, commandRoll.y+10, 
+    tbox1.x+tbox1.w+27, commandRoll.y+10);
 
   // Arrow right 
+  // * from commandRoll to tboxEditHelp2
   fill(0); 
   stroke(0); 
   textSize(14); 
   textAlign(LEFT, BASELINE); 
-  textArrowRight(commandRoll.x+commandRoll.w+27, 290, 
-    810, 290); 
+  textArrowRight(commandRoll.x+commandRoll.w+27, commandRoll.y+10, 
+    tboxEditHelp2.x-20, commandRoll.y+10); 
 
   // help text for command roll 
   textSize(14); 
   fill(0);
-  helpTextCmdRoll=""; // ???
+  helpTextCmdRoll=""; 
   // we retrieve the help text by the command name: 
   // We can access values by their key and get the value.
   String val = hmHelpCommandsGlobal.get(commandRoll.get3rdLine().toUpperCase());
   if (val!=null) {
     helpTextCmdRoll=val;
   }
-  text("Help Text for the command on the left:"
+  //text("Help Text for the command on the left:"
+  //  +"\n"
+  //  +helpTextCmdRoll
+  //  +"\n", 
+  //  830, 280, width-840, 555);
+
+  tboxEditHelp2.initText(
+    "Help Text for the Command Roll on the left:\n"
     +"\n"
     +helpTextCmdRoll
-    +"\n", 
-    830, 280, width-840, 555);
+    +"\n");
+  tboxEditHelp2.display(); 
 
   // line number 
   textSize(14); 

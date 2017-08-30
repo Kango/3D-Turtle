@@ -22,17 +22,22 @@ class TextBoxDisplayOnly {
   int pointsBetweenLines=13; 
   final int linesInEditor; 
 
+  boolean hasScrollbar; 
+
   // constr 
   TextBoxDisplayOnly(int xx, int yy, 
     int ww, int hh, 
     String text_, 
     int pointsBetweenLines_, 
+    boolean hasScrollbar_, 
     color textC_, color backgroundC_, color borderC_) {
 
     x = (short) xx;
     y = (short) yy;
     w = (short) ww;
     h = (short) hh;
+
+    hasScrollbar=hasScrollbar_;
 
     textAreaTextColor = textC_;
     textAreaBackgroundColor = backgroundC_;
@@ -74,9 +79,12 @@ class TextBoxDisplayOnly {
     strokeWeight(1); 
 
     // scrollbar 
-    fill(GRAY); 
-    rect(x+w, y, 16, h);
+    if (hasScrollbar) {
+      fill(GRAY); 
+      rect(x+w, y, 16, h);
+    }
 
+    // inner canvas of box plus text lines 
     fill(textAreaTextColor);
 
     float textx=x+3;   // x+3
@@ -89,7 +97,6 @@ class TextBoxDisplayOnly {
       //next line
       texty += pointsBetweenLines; // 13 vs. 20
     }//for
-    //
   }//method
 
   void mouseWheelTextArea(MouseEvent event) {

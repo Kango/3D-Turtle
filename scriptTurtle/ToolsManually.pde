@@ -46,7 +46,8 @@ void handleStateManuallyHelp() {
   textMode(SHAPE);
 
   textSize(14); 
-  String helpText1="Help on Manually Teach the Turtle\n\n"
+  String helpText1 = 
+    "Help on Manually Teach the Turtle\n\n"
     +"H - This Help\n\n"
     +"Cursor keys\n"
     +"Cursor up and down - forward and backward drawing. This can be seen after the Turtle walked several steps.\n"

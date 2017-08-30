@@ -1,4 +1,3 @@
-
 // tab Parser
 
 class Parse {
@@ -13,18 +12,10 @@ class Parse {
   HashMap<String, String> hmVariables = new HashMap<String, String>(); // for variables 
 
   // this is for line by line execution 
-
   boolean loopInSteps=true;
   int lastTimeLoopInSteps; 
   int speedLoopInSteps = 333; 
   int maxLinesLoopInSteps = 0; 
-
-  int countpushMatrix; 
-
-  // int i2; // for repeat in line by line execution 
-  // int maxI2=0;
-  //  StackElement seRepeat;
-  // boolean repeatSituation=false; 
 
   // CONSTRUCTOR  
   Parse() {
@@ -37,10 +28,13 @@ class Parse {
     endFlag              = false;
     log=""; 
     hmVariables = new HashMap<String, String>();
+    hmStoreTurtleMatrix = new HashMap<String, PMatrix3D>();
+    hmPathRecordingShapes = new HashMap<String, PShape>();
     stack = new ArrayList();  
     endFlag=false;
     maxLinesLoopInSteps=0;
     lastTimeLoopInSteps=millis();
+    hmPathRecordingShapes.clear();
   }
 
   void parse(String txt) {
@@ -54,12 +48,14 @@ class Parse {
       // this is line by line execution.
       // resets 
       log=""; 
-      // resetMatrix();
       hmVariables = new HashMap<String, String>();
+      hmStoreTurtleMatrix = new HashMap<String, PMatrix3D>();
+      hmPathRecordingShapes = new HashMap<String, PShape>();
+      t.suppressPath=false; 
+      t.currentNamePathRecording = "";   
       stack = new ArrayList();  
       endFlag=false;
       ignoreFollowingLines=false;
-      countpushMatrix=0; 
       // loop over lines until maxLinesLoopInSteps
       int i=0; 
       while (i<maxLinesLoopInSteps&&i<arrayScript.length) { 
@@ -79,15 +75,16 @@ class Parse {
         }//if
         lastTimeLoopInSteps=millis();
       }//if(millis...
-      // resetMatrix();
-      //for (int i_countpushMatrix=0; i_countpushMatrix<countpushMatrix; i++) 
-      //  popMatrix(); 
       //
     } else {
       // this is instantaneous running entire sketch: 
       //resets 
       log=""; 
       hmVariables = new HashMap<String, String>();
+      hmStoreTurtleMatrix = new HashMap<String, PMatrix3D>();
+      hmPathRecordingShapes = new HashMap<String, PShape>();
+      t.suppressPath=false; 
+      t.currentNamePathRecording = "";  
       stack = new ArrayList();  
       endFlag=false;
       // loop over all lines 
@@ -306,14 +303,12 @@ class Parse {
     } else if (components[0].equals("PUSHMATRIX")) {
       // without param
       pushMatrix();
-      countpushMatrix++; 
       if (loopInSteps) {
         maxLinesLoopInSteps++;
       }
     } else if (components[0].equals("POPMATRIX")) {
       // without param
       popMatrix();
-      countpushMatrix--; 
       if (loopInSteps) {
         maxLinesLoopInSteps++;
       }
@@ -413,14 +408,49 @@ class Parse {
         fill(t.turtleColor);
       }
     } 
-    // ------------------------------------------------
-    //else if (components[0].equals("PUSHPOS")) {
-    // // 1 param
-    // t.learnPosition( components[1] );
-    // }// else if (components[0].equals("POPPOS")) {
-    // // 1 param
-    // t.retrievePosition( components[1] ) ;
-    //}//
+    // path for filling areas -----------------------------------------
+    else if (components[0].equals("STARTPATH")) {
+      // 
+      if (components.length>1) {
+        t.startPathRecording=true; 
+        t.pathArrayList.clear();
+        t.currentNamePathRecording=components[1];
+        t.pathArrayList.add(t.pos3D());
+      }
+    } else if (components[0].equals("FILLPATH")) { 
+      // end path
+      t.makePathShape(); 
+      t.startPathRecording=false;
+    }//else if 
+    else if (components[0].equals("SUPPRESSPATH")) {
+      //
+      t.suppressPath=true;
+    }//else if
+    else if (components[0].equals("SHOWPATH")) {
+      //
+      if (components.length>1)
+        t.showPath(components[1]);
+    }//else if
+    // store a Matrix with name ------------------------------------------------
+    else if (components[0].equals("PUSHPOS")) {
+      // 1 param
+      t.learnPosition( components[1] );
+    } else if (components[0].equals("POPPOS")) {
+      // 1 param
+      // similar to popMatrix
+      if (!t.retrievePosition( components[1] )) { 
+        // Error
+        state=stateError; 
+        errorMsg="Error occured during popPos command.\n"
+          +"Maybe you misspelled the name of position either in the popPos line \n"
+          +"OR in the pushPos line? \n\npopPos line was:\n"
+          +fullLine
+          +" (line number: " 
+          +lineNumber
+          +").";
+        return;
+      }//if
+    }//else if
 
     // Variable Handling -----------------------------------------------
     else if (components[0].equals("LET")) {
@@ -569,57 +599,6 @@ class Parse {
   }
 
   void runARepeatBlock (int lineNumberStopAt) {
-
-    if (false) // ????
-      if (loopInSteps) {
-        // step by step execution -------------------------------------------
-
-        StackElement seRepeat = stack.get(stack.size()-1); 
-
-        if (stack.size()<0)
-          return; 
-
-        if (seRepeat==null) {
-          println ("seRepeat==null Error"); 
-          return; //
-        }
-
-        log += "repeat : -----------------\n"; 
-
-        //   seRepeat.currentRepeat++;
-
-        String[] arrayScript = split(tbox1.getText(), "\n") ; 
-
-        boolean keepOn=true; // dummy 
-        int i2 = seRepeat.lineNumberStart+1;
-        int maxI2=0;
-        // while ( seRepeat.currentRepeat <  seRepeat.repeatHowOftenInTotal ) {
-        while (i2<=maxI2) {
-          String line = arrayScript[i2]; 
-          keepOn = execute(line, i2, false);
-          i2++;
-        }
-
-        // After 1/3 of a second we want to add one more line to be executed 
-        if (millis()-lastTimeLoopInSteps > speedLoopInSteps) {
-          maxI2++;
-          lastTimeLoopInSteps=millis();
-
-          if (maxI2 >= min(arrayScript.length, lineNumberStopAt)) {
-            // still repeating, jump back to first line of repeat block 
-            seRepeat.currentRepeat++;
-            maxI2 = seRepeat.lineNumberStart+1;//???
-
-            if (seRepeat.currentRepeat >= seRepeat.repeatHowOftenInTotal) {
-              stack.remove(stack.size()-1);
-              boolean repeatSituation=false;
-            }
-          }
-        }
-        //  }//while
-        //  stack.remove(stack.size()-1); 
-        return;
-      } // outer if / step by step execution
 
     // ----------------------------------------
     // NO step by step execution 

@@ -1,5 +1,6 @@
 
 // class: pair of command (cmd) plus its help 
+// not much here yet
 
 class commandsWithItsHelpTexts {
 

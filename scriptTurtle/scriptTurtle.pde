@@ -26,17 +26,23 @@ PeasyCam camera;
 // The turtle
 Turtle t; 
 
+// the parser (state RUN)
+Parse parser = new Parse();
+
 // the editor (state edit)
 TextBox tbox1;
 
 // state edit: the "roll" for the commands
 CommandRoll commandRoll;
 
-// the parser
-Parse parser = new Parse();
+// state edit: side boxes with no editor, only text displaying
+TextBoxDisplayOnly tboxEditHelp1, tboxEditHelp2; 
 
 // state show log file: no editor, only text displaying 
-TextBoxDisplayOnly tboxLogFile1, tboxLogFile2, tboxHelp; 
+TextBoxDisplayOnly tboxLogFile1, tboxLogFile2;
+
+// state HELP
+TextBoxDisplayOnly tboxHelp; 
 
 // the states ----------------
 
@@ -101,7 +107,11 @@ int indexForBrowse=0;
 
 // other variables --------------
 
-String versionString = "Version 0.1.316";
+// show the recorded shape 
+// The PShape objects
+HashMap<String, PShape> hmPathRecordingShapes = new HashMap<String, PShape>();
+
+String versionString = "Version 0.1.3176";
 
 // Misc 
 String stateText     =""; 
@@ -114,6 +124,9 @@ String savingFramesFolder="";
 
 // HashMap for showing help for commands 
 HashMap<String, String> hmHelpCommandsGlobal = new HashMap<String, String>();
+
+// HashMap 
+HashMap<String, PMatrix3D > hmStoreTurtleMatrix = new HashMap<String, PMatrix3D>();
 
 commandsWithItsHelpTexts[] arrCmds; 
 
@@ -133,17 +146,20 @@ String log="";
 String textForStatusBarManuallyOnTopScreen=""; 
 String manuallyLastCommand=""; 
 
+// These 2 strings are used in the editor to show unknown commands as RED 
+
 // standard commands with 1 parameter 
 String cmdsWithOneParameter =
   "#FORWARD#BACKWARD#RIGHT#LEFT#NOSEDOWN#NOSEUP#ROLLRIGHT#ROLLLEFT#"
   +"#SINK#RISE#SIDEWAYSRIGHT#SIDEWAYSLEFT#FORWARDJUMP#BACKWARDJUMP#ELLIPSE#"
-  +"#SIDEWAYSLEFTJUMP##SIDEWAYS###SIDEWAYSRIGHTJUMP#";
+  +"#SIDEWAYSLEFTJUMP##SIDEWAYS###SIDEWAYSRIGHTJUMP#PUSHPOS#POPPOS#STARTPATH#SHOWPATH#";
 
+// other commands with 0 or more than 1 parameter
 String cmdsOther =
   "#LEARN#REPEAT#END#BOX#SPHERE#)#]#//#SHOWTURTLE#ARROW#"
   +"TURTLE#COLOR#BACKGROUND#GRIDON#GRIDOFF#PENDOWN#PENUP#"
   +"GRIDCOLOR#ELLIPSE#LET#ADD#SUB#MULT#DIV#HELP#TEXT#TEXTSIZE#"
-  +"LINE#POINT#PUSHMATRIX#POPMATRIX#RESETMATRIX#";
+  +"LINE#POINT#PUSHMATRIX#POPMATRIX#RESETMATRIX#FILLPATH#SUPPRESSPATH#";
 
 // ------------------------------------------------------------
 // processing core 
@@ -172,6 +188,9 @@ void setup() {
   // help
   instantiateBoxHelp(); 
 
+  // edit mode 
+  instantiateBoxEditMode();
+
   // init buttons 
   setupButtons(); 
 
@@ -179,8 +198,6 @@ void setup() {
   instantiateCommandRoll();
 
   initHelpForCommands();
-
-  // commandRoll.textArray=arrCmd;//??? 
 
   // set the filename text 
   if (fileName.equals("")) {

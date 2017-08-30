@@ -42,6 +42,8 @@ class Turtle {
   // color names to hold above color words
   IntDict colorsEnglish; 
 
+  // -----------------
+
   // pen down true = turtle draws; 
   // pen down false = pen up = turtle does not draw
   boolean penDown = true;
@@ -70,6 +72,12 @@ class Turtle {
   // Show the Turtle as a 3D-arrow. 
   // The arrow is defined as a PShape. 
   PShape shapeArrow; 
+
+  // The topic Path Recording -----------------
+  boolean startPathRecording = false; 
+  ArrayList<PVector> pathArrayList = new ArrayList(); 
+  boolean suppressPath=false; 
+  String currentNamePathRecording = "";   
 
   // ------------------------------------------------------------
   // constructor
@@ -149,6 +157,8 @@ class Turtle {
 
     // move
     translate(amount, 0, 0);
+    if (startPathRecording)
+      t.pathArrayList.add(t.pos3D());
   }
 
   void backward(int amount) {
@@ -197,6 +207,8 @@ class Turtle {
 
     // move
     translate(0, 0, -amount);
+    if (startPathRecording)
+      t.pathArrayList.add(t.pos3D());
   }
 
   void rise(float amount) {
@@ -403,47 +415,84 @@ class Turtle {
     }
   }//method 
 
-  //void learnPosition(String name) {
-  //  // ??????????
-  //  pushMatrix();
-  //}
+  // -----------------------------------------------
 
-  //void learnPosition______(String name) {
-  //  // ??????????
-  //  // Putting key-value pairs in the HashMap
+  void learnPosition(String name) {
+    // similar to pushMatrix(); but giving the matrix position a name 
+    // (and not using the stack)
+    name=name.trim(); 
+    PMatrix3D result = null;
+    result = getMatrix(result);
 
-  //  // the turtle was drawn at (0, 0, 0), store that location
-  //  float xTemp = modelX(0, 0, 0);
-  //  float yTemp = modelY(0, 0, 0);
-  //  float zTemp = modelZ(0, 0, 0);
+    // Putting key-value pairs in the HashMap
+    hmStoreTurtleMatrix.put(name, result);
+  }//method
 
-  //  PVector posTurtle = new PVector(xTemp, yTemp, zTemp); 
-  //  hm.put(name, posTurtle);
-  //}
+  boolean retrievePosition(String name) {
+    // similar to popMatrix(); but with a name for that matrix position.
+    // Returns if it succeded.
+    name=name.trim(); 
+    PMatrix3D result = null;
 
-  //void retrievePosition(String name) {
-  //  // ??????????
-  //  popMatrix(); 
-  //  return; 
-  //  /*
-  //  // We can access values by their key
-  //   PVector val = null; 
-  //   val = hm.get(name); // access by key
-  //   println(name + " is " + val);
-  //   if (val!=null) {
+    // We can access values by their key
+    result = hmStoreTurtleMatrix.get(name);
+    if (result!=null) {
+      setMatrix(result);
+      return true; // success
+    }//if
+    return false; // fail
+  }//method
 
-  //   float xTemp = modelX(0, 0, 0);
-  //   float yTemp = modelY(0, 0, 0);
-  //   float zTemp = modelZ(0, 0, 0);
+  // -------------------------------------------------------
 
-  //   println ("current pos is "+ xTemp+ ", "+ yTemp+ ", "+zTemp);
+  void makePathShape() {
+    // record the shape
+    PShape s;  // The PShape object
 
-  //   translate(val.x-xTemp, val.y-yTemp, val.z-zTemp);
-  //   }
-  //   */
-  //} 
+    if (currentNamePathRecording.equals(""))
+      return; 
 
-  // ----------------------------------------------------------
+    s = createShape();
+    s.beginShape();
+    s.fill(0, 0, 255);
+    s.noStroke();
+
+    for (PVector p : pathArrayList) {
+      s.vertex(p.x, p.y, p.z);
+    }//for
+    s.endShape(CLOSE);
+    pushMatrix();
+    hmPathRecordingShapes.put(currentNamePathRecording, s); // hashMap
+    currentNamePathRecording=""; 
+    popMatrix();
+  }
+
+  void showPath(String name) {
+    PShape s = hmPathRecordingShapes.get(name);
+    if (s!=null)
+      shape(s, 0, 0);
+  }//method
+
+  PVector pos3D() {
+    // the turtle is at (0, 0, 0), store that location
+    float x = modelX(0, 0, 0);
+    float y = modelY(0, 0, 0);
+    float z = modelZ(0, 0, 0);
+
+    //  return new PVector(0, 0, 0);
+    return new PVector(x, y, z);
+  }
+
+  PVector pos3DModel() {
+    // the turtle is at (0, 0, 0), store that location
+    float x = modelX(0, 0, 0);
+    float y = modelY(0, 0, 0);
+    float z = modelZ(0, 0, 0);
+
+    return new PVector(x, y, z);
+  }
+
+  // ---------------------------------------------------
   // internal help functions 
   // *** not for direct use ***
 
@@ -703,7 +752,7 @@ class Turtle {
     a1+= ("Use N like: forward N \n");
 
     a1+= ("************************************************************\n\n");
-    a1+= ("Additional commands \n");
+    a1+= ("Additional commands  \n");
     a1+= ("     * Help\n");
     a1+= ("     * sidewaysRight(or sideways)/sidewaysLeft(amount) to go sideways\n");
     a1+= ("     * // make a comment with // comment\n");
@@ -717,8 +766,20 @@ class Turtle {
     a1+= ("     * showTurtle (or Arrow) to display a Turtle or Arrow with the current heading. You can use it multiple times.\n");
     a1+= ("     * point x y z  draw a point (small sphere) at absolute coordinates \n");
     a1+= ("     * line x1 y1 z1 x2 y2 z2  draw a line with absolute coordinates \n");
+
+    a1+= ("************************************************************\n\n");
+    a1+= ("Commands to store a Turtle Position \n");
+    a1+= ("     * pushPos can store a Turtle Position (where the Turtle is and where it looks at). Use with a name you use: pushPos Home. \n");
+    a1+= ("     * popPos can restore a Turtle Position (where the Turtle is and where it looks at). Use with a name you defined before: popPos Home. \n");
+    a1+= ("************************************************************\n\n");
+    a1+= ("Recording a path to make a shape \n");
+    a1+= ("     * startPath \tbegins the recording. Use with a name you want to use for the shape: startPath Star. \n");
+    a1+= ("     * fillPath \tends the recording. All shapes are displayed automatically. \n");
+    a1+= ("     * suppressPath \tsuppresses the automatic display of all shapes. \n");
+    a1+= ("     * showPath \tshows one shape: showPath Star. \n");
+
     return a1;
-  }
+  }//method
   //
 }// class
 //

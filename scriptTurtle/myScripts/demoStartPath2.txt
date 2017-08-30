@@ -1,0 +1,43 @@
+// Demo for startPath II.
+
+suppressPath   // Path is not shown automatically 
+
+sink 100
+
+noseUp 45
+
+forward 44
+
+startPath Triangle1   // this name is used, Path is 
+                                 // not shown automatically
+
+triangle 
+
+fillPath  // end recording 
+
+penUp
+
+// show a series 
+Repeat 5 (
+    showPath Triangle1
+    forward 30
+)
+
+// Comment: Triangle -------------------------
+
+LEARN Triangle [
+    forward 30
+    right 120    
+    forward 30
+    right 120
+    forward 30
+    right 120
+]
+
+
+
+
+
+
+
+

@@ -68,8 +68,6 @@ class EditorLine {
     if (textArrayLocal[0].equals(""))
       return; 
 
-    // println(textArrayLocal[0]);
-
     // we test if the word is a function name (LEARN) 
     int line1 = parser.lineNumberOfLearnCommand(textArrayLocal[0]);
     // if yes 
@@ -125,7 +123,7 @@ class EditorLine {
     // if yes 
     if (line1>-1) {
       helpTextCmd="This is a command you taught the turtle. Those commands are in green. "
-        +"A new command is taught with the word 'LEARN'. The Turtle learns a new command which is used here."; // (function name)  
+        +"A new command is taught with the word \n'LEARN'. The Turtle learns a new command which is used here."; // (function name)  
       return; // we leave
     }
 

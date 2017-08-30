@@ -97,7 +97,7 @@ void mousePressedForStateEdit() {
   } // for
 
   if (!done) {
-    done2= tbox1.mousePressed1();
+    done2 = tbox1.mousePressed1();
   }
 
   if (!done2) {
@@ -317,16 +317,16 @@ void doCommandMouseHelp(int commandNumber) {
 void mouseWheel(MouseEvent event) {
   if (state==stateEdit) {
     // edit state 
-    float e = event.getCount();
-    tbox1.mouseWheelTextArea(event);
-    commandRoll.mouseWheelTextArea(event);
+    // float e = event.getCount();
+    tbox1.mouseWheelTextArea(event);       // editor box 
+    commandRoll.mouseWheelTextArea(event); // command roll 
   } else if (state==stateShowLogfile) {
     // in log file state 
-    tboxLogFile1.mouseWheelTextArea(event);
+    tboxLogFile1.mouseWheelTextArea(event); // text boxes
     tboxLogFile2.mouseWheelTextArea(event);
   } else if (state==stateHelp) {
     // in log file state 
-    tboxHelp.mouseWheelTextArea(event);
+    tboxHelp.mouseWheelTextArea(event); // text box
   } // else if
 }//func 
 //

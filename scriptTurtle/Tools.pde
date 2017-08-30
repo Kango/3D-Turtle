@@ -24,6 +24,7 @@ void instantiateBoxLogFile() {
     500, height-190, // w, h   
     tbox1.getText(), 
     13, 
+    true, 
     color(65), // textAreaTextColor
     color(255), // textAreaBackgroundColor
     color(0, 0, 255)); // textAreaBorderColor
@@ -47,6 +48,7 @@ void instantiateBoxLogFile() {
     500, height-190, // w, h
     logHelpText, 
     13, 
+    true, 
     color(65), // textAreaTextColor
     color(255), // textAreaBackgroundColor
     color(0, 0, 255)); // textAreaBorderColor
@@ -62,6 +64,7 @@ void instantiateBoxHelp() {
     width-44, height-190, // w, h   
     t.helpText(), 
     20, 
+    true, 
     color(65), // textAreaTextColor
     color(255), // textAreaBackgroundColor
     color(0, 0, 255)); // textAreaBorderColor
@@ -69,13 +72,57 @@ void instantiateBoxHelp() {
   println(t.helpText());
 }
 
+void instantiateBoxEditMode() {
+
+  // 2 text boxes 
+
+  // left  
+
+  tboxEditHelp1 = new TextBoxDisplayOnly(
+    530, 155, 
+    width-540, 70, 
+    //12, 80, // x, y
+    //500, height-190, // w, h   
+    tbox1.getText(), 
+    13, 
+    false, 
+    color(65), // textAreaTextColor
+    color(255), // textAreaBackgroundColor
+    color(0, 0, 255)); // textAreaBorderColor
+
+
+  // -----------------
+
+  // right 
+
+  String text1=""; 
+
+  //if (trim(log).equals("")) {
+  //  logHelpText="\n<You must run your Turtle Script once to \n"
+  //    +"see the log data. >";
+  //} else {
+  //  logHelpText=log;
+  //}
+
+  tboxEditHelp2 = new TextBoxDisplayOnly(
+    830, 280, 
+    width-840, 132, 
+    text1, 
+    13, 
+    false, 
+    color(65), // textAreaTextColor
+    color(255), // textAreaBackgroundColor
+    color(0, 0, 255)); // textAreaBorderColor
+}
+
+
 void instantiateCommandRoll() {
 
-  // right  
+  // right side of editor text box 
 
   commandRoll = new CommandRoll(
     530, 280, // x, y
-    250-18, 132, // w, h
+    250-18, tboxEditHelp2.h, // w, h
     "", // text 
     color(65), // textAreaTextColor
     color(255), // textAreaBackgroundColor
@@ -101,7 +148,7 @@ void statusBar() {
   fill(0);
   textAlign(LEFT, BASELINE); 
   textSize(12);
-  text(statusBarText+ " "+versionString, 
+  text(statusBarText, 
     3, height-4);
 
   //textSize(24); 
@@ -134,28 +181,17 @@ void initHelpForCommands() {
   // local HashMap for showing help for commands 
   //  HashMap<String, String> hmHelpCommands = new HashMap<String, String>();
 
-  /*
-  // standard commands with 1 parameter 
-   String cmdsWithOneParameter =
-   "#FORWARD#BACKWARD#RIGHT#LEFT#NOSEDOWN#NOSEUP#ROLLRIGHT#ROLLLEFT#"
-   +"#SINK#RISE#SIDEWAYSRIGHT#SIDEWAYSLEFT#FORWARDJUMP#BACKWARDJUMP#ELLIPSE#";
-   
-   String cmdsOther =
-   "#LEARN#REPEAT#END#BOX#SPHERE#)#]#//#SHOWTURTLE#ARROW#"
-   +"TURTLE#COLOR#BACKGROUND#GRIDON#GRIDOFF#PENDOWN#PENUP#"
-   +"GRIDCOLOR#ELLIPSE#LET#ADD#SUB#MULT#DIV#HELP#";
-   */
-
-  arrCmds = new commandsWithItsHelpTexts[38];  
+  arrCmds = new commandsWithItsHelpTexts[57];  
 
   // fill 
   int i=0;
-  arrCmds[i++] = new commandsWithItsHelpTexts (  "Forward", "Forward moves the Turtle forward and lets it draw a line. Forward is followed by one number (e.g. 44) or a variable (e.g. N).");
-  arrCmds[i++] = new commandsWithItsHelpTexts (  "Backward", "Backward moves the Turtle backward and lets it draw a line. BACKWARD is followed by one number (e.g. 44) or a variable (e.g. N).");
-  arrCmds[i++] = new commandsWithItsHelpTexts (  "Sink", "Sink moves the Turtle down and lets it draw a line. Sink is followed by one number (e.g. 44) or a variable (e.g. N).");
-  arrCmds[i++] = new commandsWithItsHelpTexts (  "Rise", "Rise moves the Turtle up and lets it draw a line. Rise is followed by one number (e.g. 44) or a variable (e.g. N).");
-  arrCmds[i++] = new commandsWithItsHelpTexts (  "sidewaysLeft", "Moves the Turtle sideways Left and lets it draw a line. sidewaysLeft is followed by one number (e.g. 44) or a variable (e.g. N).");
-  arrCmds[i++] = new commandsWithItsHelpTexts (  "sidewaysRight", "Moves the Turtle sideways Right and lets it draw a line. sidewaysRight is followed by one number (e.g. 44) or a variable (e.g. N).");
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "Forward", "Forward moves the Turtle forward and lets it draw a line.\nForward is followed by one number (e.g. 44) or a variable (e.g. N).");
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "Backward", "Backward moves the Turtle backward and lets it draw a line. \nBACKWARD is followed by one number (e.g. 44) or a variable (e.g. N).");
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "Sink", "Sink moves the Turtle down and lets it draw a line. \nSink is followed by one number (e.g. 44) or a variable (e.g. N).");
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "Rise", "Rise moves the Turtle up and lets it draw a line. \nRise is followed by one number (e.g. 44) or a variable (e.g. N).");
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "sidewaysLeft", "Moves the Turtle sideways Left and lets it draw a line. \nsidewaysLeft is followed by one number (e.g. 44) or a variable (e.g. N).");
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "sidewaysRight", "Moves the Turtle sideways Right and lets it draw a line. \nsidewaysRight is followed by one number (e.g. 44) or a variable (e.g. N).");
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "sideways", "Like sidewaysRight.");
 
   arrCmds[i++] = new commandsWithItsHelpTexts (  "ForwardJump", "Like Forward but without drawing (as if Pen were up).");
   arrCmds[i++] = new commandsWithItsHelpTexts (  "BackwardJump", "Like Backward but without drawing (as if Pen were up).");
@@ -164,72 +200,101 @@ void initHelpForCommands() {
   arrCmds[i++] = new commandsWithItsHelpTexts (  "sidewaysLeftJump", "Like sidewaysLeft but without drawing (as if Pen were up).");
   arrCmds[i++] = new commandsWithItsHelpTexts (  "sidewaysRightJump", "Like sidewaysRight but without drawing (as if Pen were up).");
 
-  arrCmds[i++] = new commandsWithItsHelpTexts (  "left", "Turns the Turtle left by an angle (yaw). Left is followed by one number (e.g. 44) or a variable (e.g. N).");
-  arrCmds[i++] = new commandsWithItsHelpTexts (  "right", "Turns the Turtle right by an angle (yaw). Right is followed by one number (e.g. 44) or a variable (e.g. N).");
-  arrCmds[i++] = new commandsWithItsHelpTexts (  "noseUp", "Rotates the Turtle nose up (pitch). noseUp is followed by one number (e.g. 44) or a variable (e.g. N).");
-  arrCmds[i++] = new commandsWithItsHelpTexts (  "noseDown", "Rotates the Turtle nose down (pitch). noseDown is followed by one number (e.g. 44) or a variable (e.g. N).");
-  arrCmds[i++] = new commandsWithItsHelpTexts (  "rollLeft", "Rotates the Turtle left around where it's looking at / its longitudinal axis (roll). rollLeft is followed by one number (e.g. 44) or a variable (e.g. N).");
-  arrCmds[i++] = new commandsWithItsHelpTexts (  "rollRight", "Rotates the Turtle right around where it's looking at / its longitudinal axis (roll). rollRight is followed by one number (e.g. 44) or a variable (e.g. N).");
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "left", "Turns the Turtle left by an angle (yaw). Left is followed by one number \n(e.g. 44) or a variable (e.g. N).");
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "right", "Turns the Turtle right by an angle (yaw). Right is followed by one\nnumber (e.g. 44) or a variable (e.g. N).");
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "noseUp", "Rotates the Turtle nose up (pitch). noseUp is followed by one number\n(e.g. 44) or a variable (e.g. N).");
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "noseDown", "Rotates the Turtle nose down (pitch). noseDown is followed by one \nnumber (e.g. 44) or a variable (e.g. N).");
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "rollLeft", "Rotates the Turtle left around where it's looking at / its longitudinal\naxis (roll). \nrollLeft is followed by one number (e.g. 44) or a variable (e.g. N).");
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "rollRight", "Rotates the Turtle right around where it's looking at / its longitudinal\naxis (roll). \nrollRight is followed by one number (e.g. 44) or a variable (e.g. N).");
 
-  arrCmds[i++] = new commandsWithItsHelpTexts (  "penUp", "Moves the Turtle Pen up, so the pen does not touch the canvas anymore. The turtle still moves but does not draw (opposite is penDown).");
-  arrCmds[i++] = new commandsWithItsHelpTexts (  "penDown", "Moves the Turtle Pen down, so the pen does touch the canvas again. The turtle draws normally (opposite is penUp).");
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "penUp", "Moves the Turtle Pen up, so the pen does not touch the canvas\nanymore. \nThe turtle still moves but does not draw (opposite is penDown).");
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "penDown", "Moves the Turtle Pen down, so the pen does touch the canvas again. \nThe turtle draws normally (opposite is penUp).");
+
   arrCmds[i++] = new commandsWithItsHelpTexts (  "gridOn", "The background grid is ON.");
   arrCmds[i++] = new commandsWithItsHelpTexts (  "gridOff", "The background grid is OFF.");
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "gridColor", "Set the grid color.");
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "background", "Set the background.");
 
-  arrCmds[i++] = new commandsWithItsHelpTexts (  "REPEAT", "Repeat tells the Turtle to repeat the following lines a few times.");
-  arrCmds[i++] = new commandsWithItsHelpTexts (  "LEARN", "Learn teaches the Turtle a new command. It is known only within this Turtle Script, not in any other. You need to call this command, otherwise the Learn block is not executed.");
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "REPEAT 4 (", "Repeat tells the Turtle to repeat the following lines a few times (e.g. 4).");
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "LEARN [", "Learn teaches the Turtle a new command. It is known only within this \nTurtle Script, not in any other. \nYou need to call this command, otherwise the Learn block is not\nexecuted.");
 
   arrCmds[i++] = new commandsWithItsHelpTexts (  ")", "A bracket ) ends a Repeat block.");
-  arrCmds[i++] = new commandsWithItsHelpTexts (  "]", "A bracket ] ends a Learn block where you teach the Turtle a new command.");
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "]", "A bracket ] ends a Learn block where you teach the Turtle \na new command.");
   arrCmds[i++] = new commandsWithItsHelpTexts (  "END", "End ends a Turtle Script.");
-  arrCmds[i++] = new commandsWithItsHelpTexts (  "HELP", "Help just delivers a screen with the help for a Turtle Script.");
-  arrCmds[i++] = new commandsWithItsHelpTexts (  "LET", "Let defines a Variable.");
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "HELP", "Help delivers a screen with the help for a Turtle Script.");
 
   arrCmds[i++] = new commandsWithItsHelpTexts (  "color", "Sets the color for the Turtle Pen.");
-  arrCmds[i++] = new commandsWithItsHelpTexts (  "showTurtle", "Shows the Turtle. You can see its headings / its rotation for the different axis. It can be used multiple times in a Turtle Script.");
-  arrCmds[i++] = new commandsWithItsHelpTexts (  "Arrow", "Shows the Turtle as an Arrow. You can see its headings / its rotation for the different axis. It can be used multiple times in a Turtle Script.");
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "showTurtle", "Shows the Turtle. You can see its headings / its rotation \nfor the different axis. It can be used multiple times in a Turtle Script.");
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "Turtle", "Shows the Turtle. You can see its headings / its rotation \nfor the different axis. It can be used multiple times in a Turtle Script.");
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "Arrow", "Shows the Turtle as an Arrow. You can see its headings / its rotation \nfor the different axis. It can be used multiple times in a Turtle Script.");
 
   arrCmds[i++] = new commandsWithItsHelpTexts (  "box", "box draws a box. Can be used with or with a number like 55.");
   arrCmds[i++] = new commandsWithItsHelpTexts (  "sphere", "sphere draws a sphere. Can be used with or with a number like 55.");
   arrCmds[i++] = new commandsWithItsHelpTexts (  "ellipse", "ellipse draws a ellipse. Can be used with or with a number like 55.");
 
-  arrCmds[i++] = new commandsWithItsHelpTexts (  "//", "The // signs start a comment. They can be used at start of line or after the command within the line.");
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "//", "The // signs start a comment. They can be used at start of line \nor after the command within the line.");
 
-  arrCmds[i++] = new commandsWithItsHelpTexts (  "text", "Shows a text at the current location of the Turtle. Example:\n  text Hello.");
-  arrCmds[i++] = new commandsWithItsHelpTexts (  "textSize", "Sets the text size for the command text. Use textSize first and in the next line text. Example: \n  textSize 22\n  text Hello You.");
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "text", "Shows a text at the current location of the Turtle. \nExample:\n  text Hello You.");
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "textSize", "Sets the text size for the command text. Use textSize first \nand in the next line text. \nExample: \n  textSize 22\n  text Hello You.");
+
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "pushMatrix", "Stores the current Turtle position and orientation on a stack\nExample:\n  pushMatrix");
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "popMatrix", "Gets the last Turtle position and orientation from the stack. \nRequires previous pushMatrix.\nExample: \n  popMatrix");
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "pushPos", "Stores the current Turtle position and orientation with a name you \ncan choose. \nExample:\n  pushPos Home");
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "popPos", "Gets the Turtle position and orientation by its name. You need to use\npushPos before and then popPos with the same name. \nRequires previous pushPos.\nExample: \n  popPos Home");
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "resetMatrix", "Resets the Matrix.");
+
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "startPath", "Starts recording Turtle positions for a shape\nExample:\n  startPath Name");
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "fillPath", "Ends the recording of a Turtle path.");
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "showPath", "Displays a path as a shape \nExample:\n  showPath Name");
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "suppressPath", "Suppresses the display of paths\nExample: \n  suppressPath ");
+
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "Line", "Draws a 3D line in 3D coordinates independent of the Turtle position\nExample:\n  line 0 0 0 100 100 100 ");
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "Point", "Draws a 3D point in 3D coordinates independent of the Turtle position\nExample:\n  point 100 100 100 ");
+
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "Let", "Let defines a Variable.");
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "Add", "Add a value to a variable.");
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "Sub", "Sub a value from a variable.");
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "Mult", "Multiply a variable by a value.");
+  arrCmds[i++] = new commandsWithItsHelpTexts (  "Div", "Divide a variable by a value.");
 
   // -------------------------------
 
-
-  //// Using an enhanced loop to interate over each entry
-  //int i=0; 
-  //for (Map.Entry me : hmHelpCommands.entrySet()) {
-  //  // print(me.getKey() + " is ");
-  //  // println(me.getValue());
-  //  arrCmds[i++] = new commandsWithItsHelpTexts ( 
-  //    (String) me.getKey(), 
-  //    (String) me.getValue()); 
-  //  i++;
-  //} //for
-
-  //for (Map.Entry me : hmHelpCommands.entrySet()) {
   for (commandsWithItsHelpTexts cmdPair : arrCmds) { 
     String tempCmd = (String) cmdPair.cmd;
     tempCmd = tempCmd.toUpperCase(); 
     hmHelpCommandsGlobal.put(tempCmd, (String)cmdPair.help);
   } //for 
 
-  // hmHelpCommands=null; 
-
   String result="";
   for (commandsWithItsHelpTexts cmdPair : arrCmds) { 
     result+=cmdPair.cmd+"\n";
   }
+
+  // init command roll
   commandRoll.initText(" \n"
     +" \n"
     +result
     +" \n");
+
+  /*
+  println ("--------------");
+   println ("Analyse command Strings against command roll");
+   checkIfStringIsFoundInhmHelpCommandsGlobal ( cmdsWithOneParameter ); 
+   checkIfStringIsFoundInhmHelpCommandsGlobal ( cmdsOther );
+   */
 } //func
+
+void checkIfStringIsFoundInhmHelpCommandsGlobal (String commandList) {
+
+  String[] arrayOfCommands=split(commandList, "#"); 
+
+  for (String s3 : arrayOfCommands) {
+    if (!s3.equals("") && hmHelpCommandsGlobal.get(s3) == null) {
+      println (s3+" missing in hmHelpCommandsGlobal");
+    }
+  }//for
+  println ("--------------");
+}//func 
 
 // ----------------------------------------------------------------------
 

@@ -1,0 +1,69 @@
+// Demo for pushPos 
+
+
+sphere
+
+pushPos Home  // setting Matrix 1
+
+penUp
+
+forward 33
+
+pushPos HomeNear   // setting Matrix 2 
+
+box
+
+// now retrieve two matrixes
+
+// 1. 
+popPos Home
+
+color YELLOW
+penDown
+backward 11
+
+// 2. 
+popPos HomeNear
+
+color BLUE
+penDown
+backward 11
+
+
+color RED
+penUp
+
+sideWays 22
+
+noseUp 45
+forward 33
+
+showTurtle 
+
+// number 3 
+
+pushPos Number3   // setting Matrix 3 
+
+penUp
+
+nosedown 73
+
+right 44
+
+forward 44
+
+Arrow   // this marks the matrix before retrieving Number 3
+
+// retrieve Number 3
+popPos Number3
+
+penDown 
+
+forward 11
+
+
+
+
+
+
+
