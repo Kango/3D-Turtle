@@ -1,0 +1,29 @@
+// Demo for Sideways
+
+gridON
+
+showTurtle
+
+forward 44
+
+sideWaysRight 33
+
+right 90
+
+sink 40
+
+forward 33
+
+rise 30 
+
+forward 30 
+
+sideWaysLeft 30
+
+rise 30
+
+showTurtle
+
+
+
+

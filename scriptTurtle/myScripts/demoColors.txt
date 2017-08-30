@@ -1,0 +1,30 @@
+// comment for this Script: Demo for colors
+
+background 233 233 23   // gray
+
+gridColor 255 0 0 
+gridON
+
+color 0 0 255 // blue 
+forward 44
+right 90
+
+color 0 255 0  // green 
+forward 13
+
+color AZURE
+forward 12
+
+color RED
+forward 60
+
+showTurtle
+
+
+
+
+
+
+
+
+

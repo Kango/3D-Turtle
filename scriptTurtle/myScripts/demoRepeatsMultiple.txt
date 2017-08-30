@@ -1,0 +1,19 @@
+// Demo for two separate Repeats
+
+
+gridON
+
+Repeat 4 (
+    forward 64
+    right 30
+)
+
+Repeat 3 (
+    forward 33
+    right -75
+)
+
+showTurtle
+
+
+

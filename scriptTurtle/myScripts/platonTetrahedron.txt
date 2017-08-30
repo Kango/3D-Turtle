@@ -1,0 +1,29 @@
+// Comnment: platonic bodys: Tetrahedron 
+
+gridOn
+
+penDown
+
+Repeat 3 (
+    c1
+    forwardJump 30
+    right 120
+)
+
+LEARN c1 [
+    rollRight 70.53
+    Triangle
+    rollLeft 70.53
+]
+
+LEARN Triangle [
+    forward 30
+    right 120
+    forward 30
+    right 120
+    forward 30
+    right 120
+]
+
+
+

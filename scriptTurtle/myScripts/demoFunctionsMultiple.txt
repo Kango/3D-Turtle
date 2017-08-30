@@ -1,0 +1,41 @@
+// demon for multiple function calls
+
+gridColor 199 99 99
+gridOn
+
+color 255 200 0
+
+REPEAT 4 (  // round brackets for Repeat
+    oneSideOfCube
+)
+
+LEARN oneSideOfCube [  // square brackets for LEARN
+    rectangle
+    forward 30
+    noseDown 90
+]
+
+LEARN rectangle [
+    forward 30
+    right 90
+    forward 30
+    right 90
+    forward 30
+    right 90
+    forward 30
+    right 90
+    Triangle
+]
+
+// Comment: Triangle
+
+LEARN Triangle [
+    forward 30
+    right 120
+    forward 30
+    right 120
+    forward 30
+    right 120
+]
+
+

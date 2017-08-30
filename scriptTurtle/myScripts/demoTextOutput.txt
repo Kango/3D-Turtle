@@ -1,0 +1,28 @@
+// Turtle Script: Text Demo
+
+gridON
+forward 44
+
+text Hello  // output of first word 
+
+right 90
+forward 33
+
+color 255 0 0
+
+text You
+
+noseDown 90
+
+forward 50 
+
+textSize 4
+text Have a good day     // output of longer text
+
+showTurtle
+
+
+
+
+
+

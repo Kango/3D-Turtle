@@ -1,0 +1,15 @@
+// Comment: Rectangle
+
+Rectangle
+
+LEARN rectangle [
+    forward 30
+    right 90
+    forward 30
+    right 90
+    forward 30
+    right 90
+    forward 30
+    right 90
+]
+

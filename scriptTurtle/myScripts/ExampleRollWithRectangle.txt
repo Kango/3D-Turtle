@@ -1,0 +1,24 @@
+// Demo for rollRight 
+
+REPEAT 10 (
+    oneRect
+)
+ShowTurtle
+
+LEARN oneRect [
+    rectangle
+    rollRight 20
+]
+
+LEARN rectangle [
+    forward 30
+    right 90
+    forward 30
+    right 90
+    forward 30
+    right 90
+    forward 30
+    right 90
+]
+
+

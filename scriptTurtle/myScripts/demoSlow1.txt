@@ -1,0 +1,20 @@
+// ring of circles
+
+gridON
+
+
+repeat 40 (
+    circle
+    rollRight 10 
+)
+
+Learn circle [
+    repeat 360 (
+        forward 1
+        Left 1
+    )
+]
+
+
+
+

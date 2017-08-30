@@ -1,0 +1,34 @@
+// Comment: Demo for Variable: N 
+// with adding a value of 2 to N. 
+
+gridOn
+
+Let N 1     // defining N and setting it to 1
+
+Repeat 90 (
+    rectangle
+    add N 2     // adding 2 to N 
+    right 6
+    sink 1
+    rollRight 4
+)
+
+END
+
+// --------------------------------------
+
+LEARN rectangle [
+    repeat 4 (
+        forward N
+        right 90
+    )
+]
+
+
+
+
+
+
+
+
+

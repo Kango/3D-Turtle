@@ -1,0 +1,12 @@
+// Demo for sphere
+
+gridON
+sphere 15
+forward 44
+sphere
+right 90
+forward 63
+sphere 27
+
+
+

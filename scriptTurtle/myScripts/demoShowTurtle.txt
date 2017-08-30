@@ -1,0 +1,21 @@
+// demo for showTurtle
+// The idea of showing the turtle in multiple places is 
+// to show the orientation of the turtle at those points.
+
+gridON
+forward 44
+
+showTurtle
+
+right 90
+
+// showTurtle
+
+forward 33
+
+showTurtle
+
+
+
+
+

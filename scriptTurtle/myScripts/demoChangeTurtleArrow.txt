@@ -1,0 +1,20 @@
+// Turtle Script: Demo for Turtle as Turtle and as Arrow
+gridON
+
+Arrow
+forward 44
+right 90
+forward 33
+
+Turtle
+
+forward 33 
+
+rollRight 45
+noseDown 45
+
+Arrow
+
+
+
+

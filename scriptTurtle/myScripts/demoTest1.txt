@@ -1,0 +1,50 @@
+// Example for a Turtle Script - use icon New for blank Script
+
+right 45
+
+Rectangle
+
+left 45 
+
+forward 44
+right 90
+
+color RED 
+
+penUp
+forward 33
+nosedown 90
+penDown
+forward 33
+
+color BLUE 
+
+forward 30
+noseDown 90
+forward 30
+Triangle
+
+noseDown 95
+right 9
+forward 83
+
+showTurtle
+
+// ------------------------------------------
+
+LEARN Rectangle [
+    Repeat 4 (
+        forward 30
+        right 90
+    )
+]
+
+LEARN Triangle [
+    Repeat 3 (
+        forward 30
+        right 120
+    )
+]
+
+
+

@@ -1,0 +1,25 @@
+// spiral test 2
+
+//noseDown 4 
+
+Arrow
+
+rollRight 47
+
+REPEAT 933 (
+    forward 3
+    right 3
+
+    rollRight 3
+
+
+   // noseDown 3
+)
+
+
+showTurtle 
+
+
+
+
+

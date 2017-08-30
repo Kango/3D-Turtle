@@ -1,0 +1,33 @@
+// Comnment: platonic bodys: Octahedron
+
+
+gridOn
+
+penDown
+
+Repeat 4 (
+    c1
+    forwardJump 30
+    right 90
+)
+
+LEARN c1 [
+    rollRight 57.53
+    Triangle
+    rollLeft 57.53
+    rollLeft 57.53
+    Triangle
+    rollRight 57.53
+]
+
+LEARN Triangle [
+    forward 30
+    right 120
+    forward 30
+    right 120
+    forward 30
+    right 120
+]
+
+
+

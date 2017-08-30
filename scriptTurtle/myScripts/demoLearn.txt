@@ -1,0 +1,16 @@
+// Demo for Learn: Triangle
+
+triangle
+gridOn
+showTurtle
+
+LEARN Triangle [
+    forward 30
+    right 120
+    forward 30
+    right 120
+    forward 30
+    right 120
+]
+
+

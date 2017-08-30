@@ -1,0 +1,18 @@
+// Demon for penUp and penDown
+
+gridON
+
+// initially pen is down 
+forward 44
+right 90
+
+// we pull the pen up, so the turtle doesn't 
+penUp
+forward 33
+
+penDown
+forward 50
+
+showTurtle
+
+

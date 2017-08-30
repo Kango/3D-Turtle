@@ -1,0 +1,29 @@
+// from 
+// en.wikipedia.org/wiki/Logo_(programming_language)#/media/File:Remi_turtlegrafik.png
+
+// Start Program with: mn_eck 36 20
+
+mn_eck
+END
+
+Learn mn_eck [ // :ne :sz 
+    	repeat 36 (
+        	right 10
+        rollRight 70        
+        	n_eck // :ne :sz
+        // box 
+        rollRight -70
+    )
+]
+
+Learn n_eck [ // :ne :sz 
+    	repeat 36 (
+        	right 10 
+        	forward 20 // :sz
+    )
+]
+
+
+
+
+

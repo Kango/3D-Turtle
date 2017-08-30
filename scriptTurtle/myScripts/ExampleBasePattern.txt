@@ -1,0 +1,41 @@
+// base pattern
+// by kfrajer 
+
+gridON
+
+basePattern 
+riseJump 100
+basePattern 
+riseJump 25
+basePattern 
+ 
+LEARN basePattern [
+forward 100
+right 90
+forward 100
+left 90
+forward 100
+left 90
+forward 200
+left 90
+forward 200
+left 90
+forward 50
+left 90
+forward 150
+right 90
+forward 25
+right 90
+forward 150
+left 45
+forward 35.35
+//Commands to go back to starting position
+penup
+backward 35.35
+left 45
+forward 25
+left 90
+pendown
+]
+
+

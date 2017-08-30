@@ -1,0 +1,26 @@
+// Turtle Script: Demo for Nose up and Nose down (3D rotation)
+
+gridON
+forward 44
+right 90 
+noseDown 45
+
+forward 33
+
+noseUp 45
+
+forward 33
+
+right 90 
+
+noseUp 30
+
+forward 40
+
+right 90 
+
+forward 33
+
+showTurtle
+
+

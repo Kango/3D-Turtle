@@ -1,0 +1,23 @@
+// Comment: Stair
+
+Repeat 10 (
+oneStep
+)
+
+LEARN oneStep [
+     rectangle
+     forward 10
+     rise 5
+]
+
+LEARN rectangle [
+    forward 30
+    right 90
+    forward 30
+    right 90
+    forward 30
+    right 90
+    forward 30
+    right 90
+]
+

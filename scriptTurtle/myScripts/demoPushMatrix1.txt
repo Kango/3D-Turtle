@@ -1,0 +1,42 @@
+// Demo for pushMatrix and popMatrix 
+
+gridON
+
+color RED  // ------------------
+
+pushMatrix
+forward 44
+right 90
+
+popMatrix
+
+color YELLOW  // -------------
+
+pushMatrix 
+
+sink 60
+
+forward 33
+
+rise 30 
+
+forward 30 
+
+sideWaysLeft 30
+
+popMatrix
+
+color BLUE // ----------------
+
+pushMatrix
+
+rise 30
+
+showTurtle
+
+popMatrix 
+
+
+
+
+
