@@ -1,0 +1,36 @@
+
+
+
+
+showTurtleAsPlane
+
+forward 18
+right 25
+forward 30
+noseDown 27
+forward 16
+noseUp 33
+forward 20
+
+showTurtle
+
+
+
+forward 13
+right 24
+noseUp 40
+forward 9
+noseUp 18
+forward 31
+noseDown 9
+noseUp 46
+forward 2
+noseUp 37
+forward 18
+left 80
+
+Plane
+
+
+
+

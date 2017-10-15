@@ -97,6 +97,7 @@ void mousePressedForStateEdit() {
   } // for
 
   if (!done) {
+    // editor box 
     done2 = tbox1.mousePressed1();
   }
 
@@ -144,7 +145,7 @@ void doCommandMouseForStateEdit(int commandNumber) {
 
   case 3:
     // Load with Browsing the Turtle Scripts (II)
-    filesForBrowse=listFiles(sketchPath("")+"/myScripts/");
+    filesForBrowse=listFilesMy(sketchPath("")+"/myScripts/");
     parser.maxLinesLoopInSteps=0;
     parser.loopInSteps=false;
     state=stateBrowseFilesStartNewFile;
@@ -161,7 +162,7 @@ void doCommandMouseForStateEdit(int commandNumber) {
     break; 
 
   case 6:
-    // New
+    // New Script Icon
     tbox1.initText(tbox1.textExample1); 
     tbox1.currentLine=0;
     tbox1.initNewLine();
@@ -196,7 +197,7 @@ void doCommandMouseForStateEdit(int commandNumber) {
     break; 
 
   case 10: 
-    // manually steer
+    // manually steer the Turtle
     // init state 
     // tbox1.writeLineBackInArray(); 
     // tbox1.initText("\n");
@@ -215,6 +216,7 @@ void doCommandMouseForStateEdit(int commandNumber) {
     break; 
 
   case 11:
+    // Help 
     state=stateHelp; 
     break;
 
@@ -319,7 +321,7 @@ void mouseWheel(MouseEvent event) {
     // edit state 
     // float e = event.getCount();
     tbox1.mouseWheelTextArea(event);       // editor box 
-    commandRoll.mouseWheelTextArea(event); // command roll 
+    commandRoll.mouseWheelTextArea(event); // command roll
   } else if (state==stateShowLogfile) {
     // in log file state 
     tboxLogFile1.mouseWheelTextArea(event); // text boxes

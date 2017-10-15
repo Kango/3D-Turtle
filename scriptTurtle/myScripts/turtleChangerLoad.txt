@@ -1,0 +1,38 @@
+// demo: Load a shape and give it texture and scale.
+// Rotate it so it has the orientation needed and set 
+// it as default shape for this Script
+
+// load shape with name, texture and scale
+LOADSHAPE biplane.obj diffuse_512.png 1.7
+
+// calculate x angle rotation (radians)
+LET XRotate HALF_PI
+
+MULT XRotate -1.0
+
+// rotate the shape by x,y,z (radians)
+ROTATESHAPE XRotate PI 0
+
+// set loaded shape as default
+SHOWTURTLEASSHAPE
+
+// show turtle as loaded shape
+showTurtle
+
+forward 18
+right 25
+forward 30
+noseDown 27
+forward 16
+noseUp 33
+forward 20
+
+showTurtle
+
+
+
+
+
+
+
+

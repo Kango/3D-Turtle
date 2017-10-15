@@ -1,6 +1,10 @@
 
-// some turtle graphics 
-// in 2D ---
+// some turtle graphics in 2D and 3D. 
+// Here the teacher of a class can program new 
+// commands and introduce them in the parser to 
+// make new turtle commands.  
+
+// graphics in 2D ---
 
 void paintRectangle(int x) {
   for (int i=0; i<4; i++) {

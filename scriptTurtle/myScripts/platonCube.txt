@@ -1,0 +1,23 @@
+// Cube
+
+Repeat 4 (
+    oneSideOfCube
+)
+
+showTurtle
+
+LEARN oneSideOfCube [
+    rectangle
+    forward 30
+    noseDown 90
+]
+
+LEARN rectangle [
+    Repeat 4 (
+        forward 30
+        right 90
+    )
+]
+
+
+

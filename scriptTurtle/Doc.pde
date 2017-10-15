@@ -1,24 +1,28 @@
 
 
-/*
 
+/*
+General rules 
+ ---------------------------
+ one class, one tab 
+ only one class per tab 
+ each class has its own tab 
+ all global objects / variables in primary tab, never in other tabs 
+ 
+ 
  to do 
+ ---------------------------
  
  log file: line-number max 
  browse mode: please wait text 
- ö and ä replace with icon 
  LEARN mit Parametern für function
  Repeat muss (auch bei nested repeat) eine Schleifenvariable kennen, zB RepeatValue,RepeatValue1,RepeatValue2,
  saveFrames - savingFrames mit folder mit datumsstempel 
  saved - variable gibt msgbox wenn gespeichert werden sollte
- reihenfolge der kommandos in der Rolle
  comment text mit so viel Platz wie der Turtle Script selbst? Wie in einem Lehrbuch
  spirale: left and noseDown verwechselt
-          mit roll versuchen?
- 
+ mit roll versuchen?
  */
-
-
 
 // The program 
 // ---------------------------------
@@ -34,15 +38,16 @@
 // Also Basics (with JAVA lib (not in use here)): https://en.wikipedia.org/wiki/Turtle_graphics
 // Repository: https://github.com/Kango/3D-Turtle
 // Tutorial: https://www.youtube.com/watch?v=ASlboq8C2FQ 
-// For axes, see: https://en.wikipedia.org/wiki/Aircraft_principal_axes
+// For axis, see: https://en.wikipedia.org/wiki/Aircraft_principal_axes
 
 // Desiderata / wishes  
+// ----------------------------------------
 // You can write a function with key word LEARN. You cannot pass variables to it though (wish).
 // You have some variables yet but not many.
 // REPEAT should know which iteration it is in.
-// Not possible to store Turtle position / heading / Matrix. 
 
 // Remarks / Errata: The editor
+// ------------------------------------------
 // I tried using G4P text area but it has difficulties in a P3D environment (fault is caused by processing, not by G4P).
 // I also tried ControlP5. 
 // Instead I used a text box by gotoloop and enhanced it a bit. Pos1 and End (and many others like F1, PgUp...) don't work due to a P3D issue.  
@@ -51,12 +56,12 @@
 // Not possible to store the current matrix under a name (just pushMatrix and popMatrix).  
 
 // Missing commands: 
-// startPath()   startet die Aufzeichnung der Turtlebewegung zum nachträglichen Füllen
-// fillPath()    verbindet die aktuelle Turtleposition mit dem Startpunkt und füllt die geschlossene Figur mit der Füllfarbe
-// saveImage     speichere Bild 
+// -------------------------------------------
+// maybe tool to make a tube in turtle path 
 
-// Concept in Editor:
-// When we use CRS up and down currentLine changes; 
+// Concepts in Editor:
+// -------------------------------------------
+// When we use CRS up and down the variable currentLine changes; 
 // for CRS left and right currentColumn changes. 
 // When working within one line by CRS left and right, by backspace and by delete,
 // the line is internally split up into 2 strings, which are left and right from the 
@@ -101,8 +106,10 @@
 // sideWaysLeft / sideWaysRight     (y)
 
 // 3. we can say penUp and penDown to determine whether we draw during walking / swimming or not
+// penUp - from now on, pen does not touch the canvas (only moving) 
+// penDown - pen touches canvas, we move and draw
 
-// 4. When we jump, we NEVER draw but only move the turtle 
+// 4. When we jump, we NEVER draw but only move the turtle (even with pendown) 
 // sinkJump / riseJump (z value changes)
 // forwardJump / backwardJump (x) 
 // sideWaysLeftJump / sideWaysRightJump     (y)

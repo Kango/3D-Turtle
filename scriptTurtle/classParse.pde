@@ -1,3 +1,4 @@
+
 // tab Parser
 
 class Parse {
@@ -8,8 +9,6 @@ class Parse {
   boolean endFlag              = false; // end of script 
 
   ArrayList<StackElement> stack = new ArrayList();  // for nested repeats
-
-  HashMap<String, String> hmVariables = new HashMap<String, String>(); // for variables 
 
   // this is for line by line execution 
   boolean loopInSteps=true;
@@ -27,7 +26,7 @@ class Parse {
     ignoreFollowingLines = false; 
     endFlag              = false;
     log=""; 
-    hmVariables = new HashMap<String, String>();
+    // hmVariables = new HashMap<String, String>();
     hmStoreTurtleMatrix = new HashMap<String, PMatrix3D>();
     hmPathRecordingShapes = new HashMap<String, PShape>();
     stack = new ArrayList();  
@@ -48,7 +47,7 @@ class Parse {
       // this is line by line execution.
       // resets 
       log=""; 
-      hmVariables = new HashMap<String, String>();
+      // hmVariables = new HashMap<String, String>();
       hmStoreTurtleMatrix = new HashMap<String, PMatrix3D>();
       hmPathRecordingShapes = new HashMap<String, PShape>();
       t.suppressPath=false; 
@@ -80,7 +79,7 @@ class Parse {
       // this is instantaneous running entire sketch: 
       //resets 
       log=""; 
-      hmVariables = new HashMap<String, String>();
+      // hmVariables = new HashMap<String, String>();
       hmStoreTurtleMatrix = new HashMap<String, PMatrix3D>();
       hmPathRecordingShapes = new HashMap<String, PShape>();
       t.suppressPath=false; 
@@ -186,7 +185,13 @@ class Parse {
       cmdsWithOneParameter.indexOf(command) > -1;
   }
 
-  void eval(String [] components, String fullLine, int lineNumber, boolean isFunctionCall) {
+  // -----------------------------------------------------------------------
+  // The core method eval : 
+
+  void eval(String [] components, 
+    String fullLine, 
+    int lineNumber, 
+    boolean isFunctionCall) {
 
     // eval and exec - the core method 
 
@@ -198,24 +203,24 @@ class Parse {
 
     // check the command 
     // BASIC commands ---------
-    if (components[0].equals("FORWARD")) {
-      String val = hmVariables.get(components[1]) ;
-      if (val!=null) {
-        int a1 = int (val);          
-        t.forward( a1 );
-      } else {
-        t.forward( int(components[1]));
-      } // else
+    if (components[0].equals("FORWARD")) { 
+      float val = getVariable(components[1]);
+      t.forward(val);
     } else if (components[0].equals("BACKWARD")) {
-      t.backward( int(components[1]));
+      float val = getVariable(components[1]);
+      t.backward(val);
     } else if (components[0].equals("RIGHT")) {
-      t.right( int(components[1]));
+      float val = getVariable(components[1]);
+      t.right(val);
     } else if (components[0].equals("LEFT")) {
-      t.left( int(components[1]));
+      float val = getVariable(components[1]);
+      t.left(val);
     } else if (components[0].equals("NOSEDOWN")) {
-      t.noseDown( int(components[1]));
+      float val = getVariable(components[1]);
+      t.noseDown(val);
     } else if (components[0].equals("NOSEUP")) {
-      t.noseUp( int(components[1]) );
+      float val = getVariable(components[1]);
+      t.noseUp(val);
     } else if (components[0].equals("PENUP")) {
       // without param
       t.penUp();
@@ -232,61 +237,140 @@ class Parse {
     // more advanced commands -------------------------------------
 
     else if (components[0].equals("ROLLRIGHT")||components[0].equals("ROLL")) {
-      // We can also access values by their key
-      String val = hmVariables.get(components[1]) ;
-      if (val!=null) {
-        float a1 = float (val);          
-        t.rollRight( a1 );
-      } else
-        t.rollRight( int(components[1]) );
+      float val = getVariable(components[1]);
+      t.rollRight(val);
     } else if (components[0].equals("ROLLLEFT")) {
-      // We can also access values by their key
-      String val = hmVariables.get(components[1]) ;
-      if (val!=null) {
-        float a1 = float (val);          
-        t.rollLeft( a1 );
-      } else
-        t.rollLeft( int(components[1]) );
-    } else if (components[0].equals("SHOWTURTLE")) {
+      float val = getVariable(components[1]);
+      t.rollLeft(val);
+    } else if (components[0].equals("SINK")) {
+      float val = getVariable(components[1]);
+      t.sink(val);
+    } else if (components[0].equals("RISE")) {
+      float val = getVariable(components[1]);
+      t.rise(val);
+    } else if (components[0].equals("SINKJUMP")) {
+      float val = getVariable(components[1]);
+      t.sinkJump(val);
+    } else if (components[0].equals("RISEJUMP")) {
+      float val = getVariable(components[1]);
+      t.riseJump(val);
+    } else if (components[0].equals("SIDEWAYSRIGHT")||components[0].equals("SIDEWAYS")) {
+      float val = getVariable(components[1]);
+      t.sidewaysRight(val);
+    } else if (components[0].equals("SIDEWAYSLEFT")) {
+      float val = getVariable(components[1]);
+      t.sidewaysLeft(val);
+    } else if (components[0].equals("SIDEWAYSRIGHTJUMP")||components[0].equals("SIDEWAYSJUMP")) {
+      float val = getVariable(components[1]);
+      t.sidewaysRightJump(val);
+    } else if (components[0].equals("SIDEWAYSLEFTJUMP")) {
+      float val = getVariable(components[1]);
+      t.sidewaysLeftJump(val);
+    } else if (components[0].equals("FORWARDJUMP")) {
+      float val = getVariable(components[1]);
+      t.forwardJump(val);
+    } else if (components[0].equals("BACKWARDJUMP")) {
+      float val = getVariable(components[1]);
+      t.backwardJump(val);
+    } 
+    // ---
+
+    else if (components[0].equals("SHOWTURTLE")) {
       // without param
       t.showTurtle();
     } else if (components[0].equals("TURTLE")) {
       // without param
-      boolean storeValue = t.typeTurtlePShapeIsTurtle;
-      t.typeTurtlePShapeIsTurtle=true;
+      int storeValue = t.typeTurtlePShapeNumber;
+      t.typeTurtlePShapeNumber=0;
       t.showTurtle();
-      t.typeTurtlePShapeIsTurtle=storeValue;
+      t.typeTurtlePShapeNumber=storeValue;
     } else if (components[0].equals("ARROW")) {
       // without param
-      boolean storeValue = t.typeTurtlePShapeIsTurtle;
-      t.typeTurtlePShapeIsTurtle=false;
+      int storeValue = t.typeTurtlePShapeNumber;
+      t.typeTurtlePShapeNumber=1;
       t.showTurtle();
-      t.typeTurtlePShapeIsTurtle=storeValue;
-    } else if (components[0].equals("SHOWTURTLEASTURTLE")) {
-      t.typeTurtlePShapeIsTurtle=true;
+      t.typeTurtlePShapeNumber=storeValue;
+    } else if (components[0].equals("PLANE")) { 
+      // without param
+      int storeValue = t.typeTurtlePShapeNumber;
+      t.typeTurtlePShapeNumber=2;
+      t.showTurtle();
+      t.typeTurtlePShapeNumber=storeValue;
+    } 
+    //
+    else if (components[0].equals("SHAPELOADED")) { 
+      // for loadedShape 
+      // without param
+      int storeValue = t.typeTurtlePShapeNumber;
+      t.typeTurtlePShapeNumber=3;
+      t.showTurtle();
+      t.typeTurtlePShapeNumber=storeValue;
+    } 
+    // 
+    else if (components[0].equals("LOADSHAPE")) { 
+      // for loadedShape  
+      switch (components.length) {
+      case 2:
+        //only file name 
+        t.defineShapeLoad(components[1].trim(), "", 1.0, fullLine, lineNumber);
+        break; 
+      case 3:
+        // file name and file for texture
+        t.defineShapeLoad(components[1].trim(), 
+          components[2].trim(), 1.0, fullLine, lineNumber);
+        break; 
+      case 4:
+        // file name and file for texture and value for scale 
+        t.defineShapeLoad(components[1].trim(), 
+          components[2].trim(), 
+          float(components[3].trim()), fullLine, lineNumber);
+        break; 
+      default:
+        // Error 
+        makeErrorMsg("Wrong number of parameters for command LOADSHAPE : "
+          +"\nYou can either give the file name or file name plus texture or \n"
+          +"file name, texture and scale.\n", 
+          fullLine, 
+          lineNumber);
+        break;
+      }//switch
+    } 
+    //
+    else if (components[0].equals("ROTATESHAPE")) {
+      // for loadedShape only 
+      switch (components.length) {
+
+      case 4:
+        float v1 = getVariable(components[1].trim());
+        float v2 = getVariable(components[2].trim());
+        float v3 = getVariable(components[3].trim());
+        t.orientationLoadedShape(v1, v2, v3, fullLine, lineNumber);
+        break; 
+
+      default:
+        //Error
+        makeErrorMsg("Wrong number of parameters for command ROTATESHAPE : "
+          +"\nYou need to give 3 parameters for rotating around x and y and z axis.\n"
+          +"E.g. rotateShape 2 3 0 \n", 
+          fullLine, 
+          lineNumber);
+        break;
+      }// switch
+    }
+    //
+    else if (components[0].equals("SHOWTURTLEASTURTLE")) {
+      t.typeTurtlePShapeNumber=0;
     } else if (components[0].equals("SHOWTURTLEASARROW")) {    
-      t.typeTurtlePShapeIsTurtle=false;
-    } else if (components[0].equals("SINK")) {
-      t.sink( int(components[1]) );
-    } else if (components[0].equals("RISE")) {
-      t.rise( int(components[1]) );
-    } else if (components[0].equals("SINKJUMP")) {
-      t.sinkJump( int(components[1]) );
-    } else if (components[0].equals("RISEJUMP")) {
-      t.riseJump( int(components[1]) );
-    } else if (components[0].equals("SIDEWAYSRIGHT")||components[0].equals("SIDEWAYS")) {
-      t.sidewaysRight( int(components[1]) );
-    } else if (components[0].equals("SIDEWAYSLEFT")) {
-      t.sidewaysLeft( int(components[1]) );
-    } else if (components[0].equals("SIDEWAYSRIGHTJUMP")||components[0].equals("SIDEWAYSJUMP")) {
-      t.sidewaysRightJump( int(components[1]) );
-    } else if (components[0].equals("SIDEWAYSLEFTJUMP")) {
-      t.sidewaysLeftJump( int(components[1]) );
-    } else if (components[0].equals("FORWARDJUMP")) {
-      t.forwardJump( int(components[1]) );
-    } else if (components[0].equals("BACKWARDJUMP")) {
-      t.backwardJump( int(components[1]) );
-    } else if (components[0].equals("GRIDON")) {
+      t.typeTurtlePShapeNumber=1;
+    } else if (components[0].equals("SHOWTURTLEASPLANE")) {    
+      t.typeTurtlePShapeNumber=2;
+    } else if (components[0].equals("SHOWTURTLEASSHAPE")) {   
+      // for loadedShape 
+      t.typeTurtlePShapeNumber=3;
+    }
+
+    // ---
+    else if (components[0].equals("GRIDON")) {
       // without param
       t.flagDrawGridOnFloor = true;
       t.drawGridOnFloor();
@@ -295,6 +379,49 @@ class Parse {
       t.flagDrawGridOnFloor = false;
     }
 
+    // ---
+    else if (components[0].equals("TURTLEBODY")) {
+      // param
+      PShape bodyPart = t.hmTurtleBodyShapes.get(components[1].toUpperCase().trim());
+      if (bodyPart!=null) {
+        if (components[2].toUpperCase().trim().equals ("COLOR")) {
+          String[] components1;
+          if (components.length==4) {
+            components1=new String[2];
+            components1[0]="COLOR";
+            components1[1]=components[3];
+          } else {
+            components1=new String[4];
+            components1[0]="COLOR";
+            components1[1]=components[3];
+            components1[2]=components[4];
+            components1[3]=components[5];
+          }
+          color cShape = getColor (components1, fullLine, lineNumber);
+          bodyPart.setFill(cShape);
+        }// if
+        else if (components[2].toUpperCase().trim().equals ("SIZE")) {
+          // bodyPart.scale(float(components[3]));
+          // bodyPart.scale(7.10, 6.00, 16.00);
+          // bodyPart=createShape(SPHERE, int(components[3]));
+          // println("size");
+        }// else if
+        else {
+          makeErrorMsg("Unknown command for changing body part ("
+            + components[2] 
+            +") : ", 
+            fullLine, 
+            lineNumber);
+        }
+      }//if
+      else {
+        makeErrorMsg("Unknown body part ("+components[1]+") : ", 
+          fullLine, 
+          lineNumber);
+      }
+      //
+    }// else if
+    // ---
     // commands for meta structure  ----------------------
 
     else if (components[0].equals("HELP")) {
@@ -316,10 +443,8 @@ class Parse {
       resetMatrix();
     } else if (components[0].equals("BACKGROUND")) {
       // param
-      color c1 = getColor(components); 
-      if (c1!=-1) {
-        background(c1);
-      }
+      color c1 = getColor(components, fullLine, lineNumber); 
+      background(c1);
     } else if (components[0].equals("REPEAT")) {
       // param
       int howManyLoops = int(components[1]);
@@ -367,11 +492,13 @@ class Parse {
       noStroke();
       fill(t.turtleColor);
       if (components.length==1) {
+        // standard sphere / no parameter 
         sphereDetail(30); 
         sphere(6);
       } else if (components.length==2) {
-        sphereDetail(20); 
-        sphere(float(components[1]));
+        sphereDetail(30); 
+        float val = getVariable(components[1]);
+        sphere(val);
       }
     } else if (components[0].equals("ELLIPSE")) {
       stroke(t.turtleColor); 
@@ -393,20 +520,16 @@ class Parse {
 
     else if (components[0].equals("STROKE")) {
       // 
-      stroke(244);
+      stroke(255);
     } else if (components[0].equals("GRIDCOLOR")) {
       // param
-      color c1 = getColor(components); 
-      if (c1!=-1) {
-        t.gridColor=c1;
-      }
+      color c1 = getColor(components, fullLine, lineNumber); 
+      t.gridColor=c1;
     } else if (components[0].equals("COLOR")) {
       // params
-      color c1 = getColor(components);
-      if (c1!=-1) {
-        t.turtleColor=c1;
-        fill(t.turtleColor);
-      }
+      color c1 = getColor(components, fullLine, lineNumber);
+      t.turtleColor=c1;
+      fill(t.turtleColor);
     } 
     // path for filling areas -----------------------------------------
     else if (components[0].equals("STARTPATH")) {
@@ -455,29 +578,30 @@ class Parse {
     // Variable Handling -----------------------------------------------
     else if (components[0].equals("LET")) {
       // set var 
-      // Putting key-value pairs in the HashMap
-      hmVariables.put (components[1], components[2]); // hashmap
+      // analyse components[2]: can either be 32 or PI 
+      float value = getVariable(components[2]);
+      // Putting key-value pairs
+      fdVariables.set(components[1], value ); //
     } else if (components[0].equals("ADD")) {
       // inc var       
-      String stringFromHM = hmVariables.get (components[1]); // hashmap  
-      float dummy = float( stringFromHM ); 
-      // Putting key-value pairs in the HashMap
-      hmVariables.put (components[1], new String( str (dummy + float(components[2])))); // hashmap
+      float dummy =  fdVariables.get (components[1]); //   
+      // Putting key-value pairs 
+      fdVariables.set(components[1], dummy + float(components[2])); //
     } else if (components[0].equals("SUB")) {
       // inc var       
-      float dummy = float( hmVariables.get (components[1])); // hashmap
-      // Putting key-value pairs in the HashMap
-      hmVariables.put (components[1], new String( str (dummy - float(components[2])))); // hashmap
+      float dummy = fdVariables.get (components[1]); // 
+      // Putting key-value pairs 
+      fdVariables.set(components[1], dummy - float(components[2])); //
     } else if (components[0].equals("MULT")) {
       // inc var       
-      float dummy = float( hmVariables.get (components[1])); // hashmap
-      // Putting key-value pairs in the HashMap
-      hmVariables.put (components[1], new String( str (dummy * float(components[2])))); // hashmap
+      float dummy = fdVariables.get (components[1].trim()); // 
+      // Putting key-value pairs 
+      fdVariables.set(components[1], dummy * float(components[2].trim())); //
     } else if (components[0].equals("DIV")) {
       // inc var  
-      float dummy = float( hmVariables.get (components[1])); // hashmap
-      // Putting key-value pairs in the HashMap
-      hmVariables.put (components[1], new String( str (dummy / float(components[2])))); // hashmap
+      float dummy = fdVariables.get (components[1]); // 
+      // Putting key-value pairs 
+      fdVariables.set(components[1], dummy / float(components[2])); //
     }
     // Using absolute 3D Coords:  Point ---------------------------------------------------------------
     else if (components[0].equals("POINT")) {
@@ -501,33 +625,68 @@ class Parse {
       paintBox2(35);
     } 
     // Error 1 -------------------------------------------------
-    else if (components[0].equals(" ") || components[0].equals("")) {
+    else if (components[0].equals(" ") || components[0].equals("") || components[0].trim().equals("")) {
       // should not occur
     } 
 
-    //--------------------------------------------------------------
+    //-----------------------
     else {
-      // Error
-      state=stateError; 
-      errorMsg="unknown command : "
-        +fullLine
-        +" (line number: " 
-        +lineNumber
-        +").";
-      return;
-    }
+      // Error 2
+      makeErrorMsg("Unknown command : ", 
+        fullLine, 
+        lineNumber);
+    }//else
   } // func 
 
-  color getColor(String[] components) {
-    color c1=-1;  
+  // ----------------------------------------------------------------------------------------------
+
+  color getColor(String[] components, 
+    String fullLine, int lineNumber) {
+
+    color c1=color(0);   
+
     if (components.length==4) {
-      c1=color( int(components[1]), int(components[2]), int(components[3]));
+      // The word "color" plus 3 parameters: numbers like 255 0 0 
+      int r1=int(components[1].toLowerCase().trim());
+      int g1=int(components[2].toLowerCase().trim()); 
+      int b1=int(components[3].toLowerCase().trim()); 
+      c1 = color(r1, g1, b1);
     } else if (components.length==2) {
+      // either color name like WHITE
+      components[1]=components[1].toUpperCase();
       if (t.colorsEnglish.hasKey(components[1])) {
+        // color name like WHITE or a gray value like 114
         c1 = t.colorsEnglish.get(components[1]);
-      }
+      } else if (isNumeric(components[1])) {
+        // gray value like 114
+        int grayValue=int(components[1].toLowerCase().trim());
+        c1 = color(grayValue);
+      } else {
+        makeErrorMsg("Unknown Turtle Color Name (or gray value).\nSee Help for the fixed colors : ", 
+          fullLine, lineNumber);
+      }//else
+    } else {
+      makeErrorMsg("Unknown color \n(wrong numbers of parameters, "
+        +components.length
+        +"): ", 
+        fullLine, lineNumber);
     }
     return c1;
+  } // method 
+
+  float getVariable(String component) {
+    // returns variable value or number value,
+    // both from component
+
+    if (fdVariables.hasKey(component)) {
+      // It is an variable like N; retrieve and return its value 
+      float val = fdVariables.get(component);
+      return val;
+    }// if 
+
+    // It is a normal number
+    float result = float(component);
+    return result;
   } // method 
 
   void runACommand (String[] components) {
@@ -636,7 +795,7 @@ class Parse {
     }//while
     stack.remove(stack.size()-1); 
     //
-  } // method 
+  } // method
   //
 }//class
 // 

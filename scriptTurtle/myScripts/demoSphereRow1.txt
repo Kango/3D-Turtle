@@ -1,0 +1,34 @@
+
+
+color 255 255 255
+
+Let N 10
+
+noseUp 77
+
+forward 20
+
+repeat 3 (
+    myStepSphere
+    add N 6
+)
+
+Let N 16
+
+repeat 4 (
+    myStepSphere
+    add N -4
+)
+
+// -----------------------------
+
+Learn myStepSphere [
+    forward 53
+    color WHITE
+    sphere N
+]
+
+
+
+
+

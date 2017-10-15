@@ -1,4 +1,4 @@
-// demon for multiple function calls
+// demo for multiple function calls
 
 gridColor 199 99 99
 gridOn
@@ -37,5 +37,6 @@ LEARN Triangle [
     forward 30
     right 120
 ]
+
 
 

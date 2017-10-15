@@ -1,0 +1,56 @@
+
+// 3D sculpture 
+
+sinkJump 40
+
+noseUp 90
+
+oneItem
+
+forwardJump 20
+
+oneItem
+
+forwardJump 20
+
+oneItem
+
+forwardJump 40
+
+oneItem
+
+noseDown 90 
+
+// oneItem
+
+repeat 4 (
+
+left 90
+
+oneItem
+
+)
+
+noseDown 90
+
+oneItem
+
+
+// -------------------------
+
+Learn oneItem [
+
+    ForwardJump 20
+    
+    box
+    
+    BackwardJump 20
+
+]
+
+
+
+
+
+
+

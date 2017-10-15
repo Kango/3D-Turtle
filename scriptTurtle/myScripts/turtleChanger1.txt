@@ -1,0 +1,20 @@
+
+
+turtleBody leg1 color BLUE
+turtleBody leg2 color 255 255 0
+
+turtleBody leg3 color 255 0 255
+turtleBody leg4 color PURPLE
+
+turtleBody body color NAVY
+
+turtleBody head color 0 255 255
+
+turtleBody eye1 color 255 0 0 
+turtleBody eye2 color PINK
+
+
+showTurtle
+
+
+

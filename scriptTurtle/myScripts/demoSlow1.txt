@@ -3,17 +3,18 @@
 gridON
 
 
-repeat 40 (
+repeat 12 (
     circle
-    rollRight 10 
+    rollRight 30 
 )
 
 Learn circle [
-    repeat 360 (
-        forward 1
-        Left 1
+    repeat 36 (
+        forward 10
+        Left 10
     )
 ]
+
 
 
 

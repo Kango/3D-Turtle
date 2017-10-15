@@ -58,12 +58,11 @@ class Turtle {
   boolean flagDrawGridOnFloor = true;
   color gridColor = DARKGRAY; 
 
-  // attempt to have a hashmap to store positions - failed  
-  // HashMap<String, PVector> hm = new HashMap<String, PVector>();
+  // ---------------------------------------------------------------------
 
-  // further vars for displaying the turtle as turtle or arrow 
-  // type how the turtle is shown            // true = turtle
-  boolean typeTurtlePShapeIsTurtle = true;   // false = arrow
+  // Topic: further vars for displaying the turtle as turtle or arrow or ...
+  // type how the turtle is shown     // 0 = turtle
+  int typeTurtlePShapeNumber = 0;   // 1 = arrow
 
   // Show the Turtle as a 3D-Turtle. Default.  
   // Create the shape group turtle:
@@ -72,6 +71,17 @@ class Turtle {
   // Show the Turtle as a 3D-arrow. 
   // The arrow is defined as a PShape. 
   PShape shapeArrow; 
+
+  // Show the Turtle as a plane. 
+  PShape loadedShapePlane=null; 
+
+  // Show the Turtle as a loaded shape.
+  PShape loadedShape=null;
+
+  // this HashMap stores legs, eyes etc. of the Turtle so you can change their color individually 
+  HashMap<String, PShape> hmTurtleBodyShapes = new HashMap<String, PShape>();
+
+  // ---------------------------------------------------------------------
 
   // The topic Path Recording -----------------
   boolean startPathRecording = false; 
@@ -90,6 +100,8 @@ class Turtle {
     defineTurtle();
     // make an 3D Arrow to show as Turtle 
     defineArrow(); 
+    // load plane shape
+    definePlane(); 
 
     // 2.
     // show help
@@ -122,9 +134,18 @@ class Turtle {
     colorsEnglish.set("YELLOW", YELLOW);
     colorsEnglish.set("ORANGE", ORANGE);
 
-    colorsEnglish.set("PURPLE", CHARTREUSE); // purple pink navy
-    colorsEnglish.set("PINK", YELLOW);
-    colorsEnglish.set("NAVY", ORANGE);
+    colorsEnglish.set("PURPLE", PURPLE); // purple pink navy
+    colorsEnglish.set("PINK", PINK);
+    colorsEnglish.set("NAVY", NAVY);
+
+    // 4.
+    // We define some math constants as variables 
+    // Putting key-value pairs in the HashMap
+    fdVariables.set ("PI", PI); // hashmap
+    fdVariables.set ("TWO_PI", TWO_PI); // hashmap
+    fdVariables.set ("HALF_PI", HALF_PI); // hashmap
+    fdVariables.set ("QUARTER_PI", QUARTER_PI); // hashmap
+    fdVariables.set ("TAU", TAU); // hashmap
     //
   } // constructor 
 
@@ -135,7 +156,7 @@ class Turtle {
   //  * drawing normally draws and moves the turtle (unless penDown is false).
   //  * jumping NEVER draws and only moves the turtle (penDown is preserved)
 
-  void forward(int amount) {
+  void forward(float amount) {
 
     // drawing only when the pen is down 
     if (penDown) {
@@ -161,11 +182,11 @@ class Turtle {
       t.pathArrayList.add(t.pos3D());
   }
 
-  void backward(int amount) {
+  void backward(float amount) {
     forward( - amount);
   }
 
-  void forwardJump(int amount) {
+  void forwardJump(float amount) {
     // like forward but pen is up.
 
     // When the pen now is up, turtle doesn't draw
@@ -179,7 +200,7 @@ class Turtle {
     penDown=formerPenDown; // restore
   }
 
-  void backwardJump(int amount) {
+  void backwardJump(float amount) {
     forwardJump( - amount);
   }
 
@@ -351,11 +372,38 @@ class Turtle {
   void showTurtle() {
     pushMatrix();
     fill(turtleColor);
-    if (typeTurtlePShapeIsTurtle)
+    switch (typeTurtlePShapeNumber) {
+    case 0:
       shape(shapeTurtle); // Draw the group shape shapeTurtle
-    else shape( shapeArrow); // Draw the group shape shapeArrow
+      break;
+    case 1:
+      shape( shapeArrow); // Draw the group shape shapeArrow
+      break; 
+    case 2:
+      shape(loadedShapePlane); // draw plane 
+      break;
+    case 3: 
+      // SHOWTURTLEASSHAPE
+      if (loadedShape!=null) {
+        shape(loadedShape);
+      } else {
+        // Error 
+        makeErrorMsg("Loaded Shape is not there. "
+          +"\nYou need to use loadShape and specify a file name (optional 2nd file with a texture and optional a scale, e.g. 1.7). "
+          +"\nAdditionally you can use ROTATESHAPE to rotate the shape permanently so that it matches the Turtle.", 
+          "", 
+          -1);
+      }//else
+      break;
+    default:
+      // Error 
+      makeErrorMsg("Unknown Shape ID. \n", 
+        "", 
+        -1);
+      break;
+    }//switch 
     popMatrix();
-  }
+  }//method 
 
   void dropSphere() {
     noStroke(); 
@@ -554,6 +602,10 @@ class Turtle {
   void defineTurtle() {
 
     PShape head, body;
+    PShape leg1, leg2, leg3, leg4;
+    PShape  eye1, eye2;
+
+    hmPathRecordingShapes = new HashMap<String, PShape>();
 
     // body
     shapeTurtle =  createShape(GROUP);
@@ -574,51 +626,47 @@ class Turtle {
 
     // Make two shapes: eyes 
     color colEye=color (#DCF528); 
-    PShape  eye1 = createShape(SPHERE, 2);
+    eye1 = createShape(SPHERE, 2);
     eye1.setStroke(false);
     eye1.setFill(colEye);
     eye1.translate(38, -18, 7); 
 
-    PShape  eye2 = createShape(SPHERE, 2);
+    eye2 = createShape(SPHERE, 2);
     eye2.setStroke(false);
     eye2.setFill(colEye);
     eye2.translate(38, -18, -7); 
-
-    PShape  leg ;
 
     color legCol = color ( #1a8E1a ) ; 
     float legSize=6; 
     float offset1 = 16; 
 
-    leg = createShape(SPHERE, legSize);
-    leg.setStroke(false);
-    leg.setFill(legCol);
-    leg.scale(1, 1, 1);
-    leg.translate(offset1, 14, offset1); 
+    leg1 = createShape(SPHERE, legSize);
+    leg1.setStroke(false);
+    leg1.setFill(legCol);
+    leg1.scale(1, 1, 1);
+    leg1.translate(offset1, 14, offset1); 
+    shapeTurtle.addChild(leg1);
 
-    shapeTurtle.addChild(leg);
-
-    leg = createShape(SPHERE, legSize);
-    leg.setStroke(false);
-    leg.setFill(legCol);
-    leg.scale(1, 1, 1);
-    leg.translate(offset1, 14, -offset1); 
-
-    shapeTurtle.addChild(leg);
+    leg2 = createShape(SPHERE, legSize);
+    leg2.setStroke(false);
+    leg2.setFill(legCol);
+    leg2.scale(1, 1, 1);
+    leg2.translate(offset1, 14, -offset1); 
+    shapeTurtle.addChild(leg2);
     //--
-    leg = createShape(SPHERE, legSize);
-    leg.setStroke(false);
-    leg.setFill(legCol);
-    leg.scale(1, 1, 1);
-    leg.translate(-offset1, 14, offset1); 
-    shapeTurtle.addChild(leg);
+    leg3 = createShape(SPHERE, legSize);
+    leg3.setStroke(false);
+    leg3.setFill(legCol);
+    leg3.scale(1, 1, 1);
+    leg3.translate(-offset1, 14, offset1); 
+    shapeTurtle.addChild(leg3);
 
-    leg = createShape(SPHERE, legSize);
-    leg.setStroke(false);
-    leg.setFill(legCol);
-    leg.scale(1, 1, 1);
-    leg.translate(-offset1, 14, -offset1); 
-    shapeTurtle.addChild(leg);
+    leg4 = createShape(SPHERE, legSize);
+    leg4.setStroke(false);
+    leg4.setFill(legCol);
+    leg4.scale(1, 1, 1);
+    leg4.translate(-offset1, 14, -offset1); 
+    shapeTurtle.addChild(leg4);
 
     // add the "child" shapes to the parent group
     shapeTurtle.addChild(body);
@@ -627,6 +675,19 @@ class Turtle {
     shapeTurtle.addChild(eye2);
     shapeTurtle.rotateX(radians(-90)); 
     shapeTurtle.scale(0.221);
+
+    // leg1.setFill(color(0, 0, 255));
+
+    hmTurtleBodyShapes.put("LEG1", leg1); // hashMap
+    hmTurtleBodyShapes.put("LEG2", leg2); // hashMap
+    hmTurtleBodyShapes.put("LEG3", leg3); // hashMap
+    hmTurtleBodyShapes.put("LEG4", leg4); // hashMap
+
+    hmTurtleBodyShapes.put("EYE1", eye1); // hashMap
+    hmTurtleBodyShapes.put("EYE2", eye2); // hashMap
+
+    hmTurtleBodyShapes.put("BODY", body); // hashMap
+    hmTurtleBodyShapes.put("HEAD", head); // hashMap
   }
 
   void defineArrow() {
@@ -702,15 +763,84 @@ class Turtle {
     shapeArrow.rotateZ(radians(90));
   } //func
 
+  void definePlane() {
+
+    // load plane shape
+    loadedShapePlane = loadShape("biplane.obj"); 
+    // apply its texture 
+    PImage img1=loadImage("diffuse_512.png"); 
+    loadedShapePlane.setTexture(img1);
+
+    // we need to rotate the shape to match the orientation of the turtle
+    loadedShapePlane.rotateX(-PI/2);
+    loadedShapePlane.rotateY(PI);
+
+    loadedShapePlane.scale(1.7);
+  }
+
+  void defineShapeLoad( String a1, String t1, float scaleValue, 
+    String fullLine, int lineNumber ) {
+
+    if (a1.equals("")) {
+      // Error 
+      makeErrorMsg("LOADSHAPE needs at least one parameter, file name for the shape to load. ", 
+        fullLine, 
+        lineNumber);
+      return;
+    }
+
+    if (!fileExistsMy(dataPath("")+"/" + a1)) { 
+      // Error 
+      makeErrorMsg("LOADSHAPE: file "+a1+"\nnot found. "
+        +"\nIt needs to be in the data folder (use only the name "
+        +"\nof the file). When using a path: No spaces in "
+        +"\npath are allowed. ", 
+        fullLine, 
+        lineNumber);
+      return;
+    }
+
+    // if (loadedShape!=null) return; 
+
+    loadedShape = loadShape( a1 ); // "biplane.obj"); 
+
+    // apply its texture 
+    if (!t1.equals("")) {
+      PImage img1=loadImage( t1 ); // "diffuse_512.png"); 
+      loadedShape.setTexture(img1);
+    }
+
+    loadedShape.scale(scaleValue); // 1.7);
+    // use also func orientationLoadedShape
+  } // method
+
+  void orientationLoadedShape( float xVal, float yVal, float zVal, 
+    String fullLine, int lineNumber  ) {
+    // we need to rotate the shape to match the orientation of the turtle
+    if (loadedShape==null) {
+      // Error 
+      makeErrorMsg("ROTATESHAPE: Shape is not defined. Use LOADSHAPE first.", 
+        fullLine, 
+        lineNumber);
+      return;
+    }
+
+    loadedShape.rotateX(xVal);
+    loadedShape.rotateY(yVal);
+    loadedShape.rotateZ(zVal);
+  }// func 
+
   String helpText() {
 
-    String 
-      a1= "Help for turtle\n-------------------------------------------\n";
+    String a1;
+
+    a1 = "Help for Turtle Script\n-------------------------------------------\n";
     a1+= ("Imagine a turtle. You can tell it to go forward or turn left or right.\n");
     a1+= ("Imagine it carries a pen so when it walks it draws a line behind it.\n");
     a1+= ("You can now draw an image by telling the turtle where to go.\n");
     a1+= ("To draw a rectangle you would say: repeat 4 ( forward 60 right 90 ). The rotation with right / left determines in which direction the Turtle draws next.\n");
     a1+= ("You can write your Turtle Script in an Editorbox on the screen and run it by clicking the green > sign with the mouse.\n");
+    a1+= ("You can also steer the Turtle with Cursor keys directly to generate a Turtle Script.\n");
 
     a1+= ("Here you see one text box where you see a help for the current line in the editor box. \nYou see a ROLL with commands (use mouse wheel) to choose commands; \n");
     a1+= ("attached is also a small help text.\n");
@@ -725,10 +855,10 @@ class Turtle {
     a1+= ("     * penUp so Turtle walks but does not draw.\n");
     a1+= ("     * penDown Turtle draws again\n");
     a1+= ("You can use Learn Rect [...] to teach it a new command and then use that command Rect.\n"); 
-    a1+= ("     * You can thus make your own turtle commands like turtleRectangle by writing a function and use it (see demos, use Load icon / command button).\n");
+    a1+= ("     * You can thus make your own turtle commands like turtleRectangle by writing a function and use it (see demos, use the yellow Load Icon).\n");
     a1+= ("You can use Repeat 4 (...) to repeat a few lines 4 times (see demos). \n\n");
     a1+= ("The turtle is also a ***3D Turtle***, imagine a water turtle that draws a line behind it.\nIt can also dive into a aquarium and therefore\n"); 
-    a1+= ("can not only draw on a canvas but in free space.\n");
+    a1+= ("can not only draw on a canvas but in free 3D space.\n");
     a1+= ("     * Thus you can connect four rectangles to a cube etc.\n");
     a1+= ("     * When you think of a plane, the terms for rotating in 3D are called pitch/roll/yaw.\n");     
     a1+= ("Major commands in 3D space are \n");
@@ -744,25 +874,38 @@ class Turtle {
     a1+= ("************************************************************\n\n");
     a1+= ("Variable Handling \n");
     a1+= ("The Program knows a limited Handling of variables. All variables are global.\n");
-    a1+= ("     * Let N 21\n");
+    a1+= ("     * Let N 21 (instead of N use any name you want)\n");
     a1+= ("     * add N 2     // adding 2 to N \n");
     a1+= ("     * mult N 2    \n");  
     a1+= ("     * sub N 2     \n");
     a1+= ("     * div N 2     \n");
-    a1+= ("Use N like: forward N \n");
-
+    a1+= ("Use N like: forward N or sink N or sphere N.... \n");
+    a1+= ("     * There are constants: PI; TWO_PI; HALF_PI; TAU     \n");
+    a1+= ("************************************************************\n\n");
+    a1+= ("Commands to change the Turtle appearance  \n");
+    a1+= ("     * showTurtle shows the standard Turtle; Example: showTurtle   \n");  
+    a1+= ("     * You can change this standard Turtle's shape with \n"
+      +   "                showTurtleAsArrow / showTurtleAsPlane / showTurtleAsShape (you need to load a shape first, see below) and "
+      + "\n                showTurtleAsTurtle (back to normal).\n");
+    a1+= ("     * No matter what standard Turtle is, you can just say: Turtle/ Arrow/ Plane/ shapeLoaded (load shape first) to display it directly.\n");
+    a1+= ("     * For the standard Turtle: You can change colors using  \"turtleBody leg1 color BLUE\" \n");  
+    a1+= ("       You can use all colors ('BLUE', '144' or '255 0 255') and the keyWords head,body,eye1,eye2,leg1,leg2,leg3,leg4 with this command.\n");  
+    a1+= ("     * You can load a 3rd party shape (.obj file) with a texture (.png or .jpg file) and a scale; Example: LOADSHAPE biplane.obj diffuse_512.png 1.7   \n");  
+    a1+= ("       You may change the rotation of the shape using ROTATESHAPE XRotate PI 0 // rotate the shape by x,y,z (radians)  \n");
+    a1+= ("       Examples see folder Advanced.   \n");  
     a1+= ("************************************************************\n\n");
     a1+= ("Additional commands  \n");
-    a1+= ("     * Help\n");
+    a1+= ("     * Help to show this help \n");
     a1+= ("     * sidewaysRight(or sideways)/sidewaysLeft(amount) to go sideways\n");
     a1+= ("     * // make a comment with // comment\n");
     a1+= ("     * pushMatrix and popMatrix\n");
     a1+= ("     * background red green blue : set background color, e.g. blue is background 0 0 255\n");
-    a1+= ("     * COLOR red green blue : set Turtle drawing color (Pen) color, eg. red is COLOR 255 0 0 OR use color RED etc.\n");
-    a1+= ("     *      Named colors are White, Black, Gray, Lightgray, darkgray, RED, GREEN, BLUE, ROSE, MAGENTA, VIOLET, AZURE, CYAN, \n");
+    a1+= ("     * COLOR red green blue : set Turtle drawing color (Pen) color, eg. red is COLOR 255 0 0 OR use color RED etc.;\n");
+    a1+= ("     *      named Turtle Colors are White, Black, Gray, Lightgray, darkgray, RED, GREEN, BLUE, ROSE, MAGENTA, VIOLET, AZURE, CYAN, \n");
     a1+= ("            SPRINGGREEN, CHARTREUSE, YELLOW, ORANGE, PURPLE, PINK, NAVY, RED, GREEN, BLUE, ROSE, MAGENTA, VIOLET.\n");
+    a1+= ("            For gray values from black (0) to white (255) use color with one parameter, e.g. color 122.\n");
     a1+= ("     * gridOn and gridOff : set grid on / off\n");
-    a1+= ("     * GRIDCOLOR red green blue : set grid color color\n");
+    a1+= ("     * GRIDCOLOR red green blue : set grid color. \n");
     a1+= ("     * showTurtle (or Arrow) to display a Turtle or Arrow with the current heading. You can use it multiple times.\n");
     a1+= ("     * point x y z  draw a point (small sphere) at absolute coordinates \n");
     a1+= ("     * line x1 y1 z1 x2 y2 z2  draw a line with absolute coordinates \n");
@@ -777,6 +920,17 @@ class Turtle {
     a1+= ("     * fillPath \tends the recording. All shapes are displayed automatically. \n");
     a1+= ("     * suppressPath \tsuppresses the automatic display of all shapes. \n");
     a1+= ("     * showPath \tshows one shape: showPath Star. \n");
+
+    a1+= ("************************************************************\n\n");
+    a1+= ("   * credits: Jeremy Douglass - thank you! \n");
+    a1+= ("     https:// forum.processing.org/two/discussion/20706/how-3d-turtle-like-in-logo-but-3d-math-problem\n");
+    a1+= ("   * Thanks to Jonathan (PeasyCam)\n"); 
+    a1+= ("   * Thanks to GoToLoop for the text input area\n");
+    a1+= ("   * Thanks for drawLine programmed by James Carruthers\n");
+    a1+= ("   * Thanks to Calsign\n");
+    a1+= ("   * Thanks to koogs\n");
+    a1+= ("   * Thanks for the plane to https : // opengameart.org/content/low-poly-biplane\n");
+    a1+= ("  ");
 
     return a1;
   }//method

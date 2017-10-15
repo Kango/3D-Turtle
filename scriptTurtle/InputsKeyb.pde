@@ -28,6 +28,7 @@ void keyPressed() {
   case stateHelp:
   case stateError:
   case stateShowLogfile:
+    // just go back to Edit Mode
     if (key==ESC) {
       key=0; // kill
     }
@@ -65,13 +66,24 @@ void keyPressed() {
       indexForBrowse--;
     } else if (keyCode==RIGHT) {
       indexForBrowse++;
-    }
+    } else {
+
+      switch (key) {
+      case 'c':
+        // camera tour rotate: toggle  
+        cameraTourRotate=!cameraTourRotate;
+        if (cameraTourRotate) {
+          camera.setActive(false);
+        }
+        break;
+      }//switch
+    }//else
 
     if (indexForBrowse<0)
       indexForBrowse=0;
     if (indexForBrowse>=filesForBrowse.length)
       indexForBrowse=filesForBrowse.length-1;
-    state=stateBrowseFilesStartNewFile;
+    state = stateBrowseFilesStartNewFile;
     break; 
 
   default:
@@ -291,6 +303,7 @@ void keyPressedForEditState() {
     key=0; // kill
     return;
   } else if (key == '#') {
+    // run 
     parser.loopInSteps=false;
     state = stateRun;
     parser.maxLinesLoopInSteps=0;
@@ -344,9 +357,17 @@ void keyPressedForRunState() {
     break; 
 
   case 'a':
-    t.typeTurtlePShapeIsTurtle=
-      !t.typeTurtlePShapeIsTurtle;
+    t.typeTurtlePShapeNumber++;
+    t.typeTurtlePShapeNumber=t.typeTurtlePShapeNumber%4;
     break; 
+
+  case 'c':
+    // camera tour rotate: toggle  
+    cameraTourRotate=!cameraTourRotate;
+    if (cameraTourRotate) {
+      camera.setActive(false);
+    }
+    break;
 
   default: 
     // go back 

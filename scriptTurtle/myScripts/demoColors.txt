@@ -1,24 +1,37 @@
 // comment for this Script: Demo for colors
+// Either 3 color parameters: Red, Green, Blue
+// or defined colors like purple (see Help)
+// or one number as a gray value.
 
 background 233 233 23   // gray
 
-gridColor 255 0 0 
+gridColor 255 0 0   // red 
 gridON
 
-color 0 0 255 // blue 
+// -----------------------------------
+
+color 0 0 255 // blue line 
 forward 44
 right 90
 
 color 0 255 0  // green 
 forward 13
 
-color AZURE
-forward 12
+color AZURE  // in-build Turtle color 
+sink 12
 
-color RED
-forward 60
+color 123    // one parameter: gray value
+forward 12 
+
+color red
+forward 30
+
+sphere 12
+
+forward 33
 
 showTurtle
+
 
 
 

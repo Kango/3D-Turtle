@@ -1,21 +1,32 @@
 
-
-// vertical scroll bar class 
+// vertical scroll bar class. 
+// This includes a slider and 
+// 2 scroll buttons. 
+// communicates with outside with getPos and 
+// setPos. 
+// Used by cmdRoll. 
 
 class VScrollbar {
+
+  // used by the Command Roll
 
   int xpos, ypos;         // x and y position of bar
   int swidth, sheight;    // width and height of bar
 
-  float spos, newspos;    // x position of slider
+  float spos, newspos;    // x position of slider (s for slider)
   int sposMin, sposMax;   // max and min values of slider
   int loose;              // how loose/heavy
 
-  boolean over;           // is the mouse over the slider?
   boolean locked;
   float ratio;
 
-  boolean updated=false; 
+  boolean updated=true; 
+
+  // 2 buttons for scrolling 
+  final int btnLength    = 2;   // scrolling
+
+  //scrolling buttons 
+  ArrayList<RectButton> rectButtons = new ArrayList(); 
 
   // constr 
   VScrollbar (int xp, int yp, 
@@ -33,16 +44,51 @@ class VScrollbar {
     ypos = yp;
 
     //spos = ypos + sheight/2 - swidth/2;
-    spos = ypos;
+    spos = ypos+swidth; 
     newspos = spos;
 
-    sposMin = ypos;
-    sposMax = ypos + sheight - swidth;
+    sposMin = ypos+swidth;
+    sposMax = ypos + sheight - swidth-swidth;
     loose = l;
-  }// constr 
+
+    initButtons();
+  } // constr 
+
+  void initButtons() {
+
+    // Init 2 Buttons 
+
+    int i=0;
+
+    // pre init
+    for (int x=0; x < btnLength; x++) {    
+
+      // pre init
+      // Using a multiple of x means the buttons aren't all on top of each other
+      // (and 20 is the distance to the left screen border)
+
+      int xPos = x*64 + 20; 
+      rectButtons.add(new RectButton(xPos, 20, 52, 52, col1, col2, true, "Scrolling", 0, "", "", null, x));
+    } // for
+
+    i=0;
+    rectButtons.get(i).ToolTipText = "Scroll up. ";
+    rectButtons.get(i).Text = str((char)0x25B2) ; //"";
+    rectButtons.get(i).btnImage = null;
+    rectButtons.get(i).setPosition ( xpos, ypos, // x, y
+      swidth, swidth); // w, h
+
+    i=1;
+    rectButtons.get(i).ToolTipText = "Scroll down. ";
+    rectButtons.get(i).Text =  str((char)0x25BC); //  "";
+    rectButtons.get(i).btnImage = null;
+    rectButtons.get(i).setPosition (  xpos, ypos+sheight-swidth, // x, y
+      swidth, swidth);
+  }
 
   void update() {
 
+    boolean over;   // is the mouse over the slider?
     updated=false; 
 
     if (over()) {
@@ -57,11 +103,13 @@ class VScrollbar {
       locked = false;
     }
     if (locked) {
-      newspos = constrain2(mouseY-swidth/2, sposMin, sposMax);
+      newspos = constrain2(mouseY-swidth/2, sposMin, sposMax);  
       updated=true;
+      // store time since last mouse moved / pressed  
+      timeSinceLastMouseMoved = millis();
     }
     if (abs(newspos - spos) > 1) {
-      spos = spos + (newspos-spos)/loose;
+      spos = spos + (newspos-spos)/loose; // bit of damping / easing
     }
   }
 
@@ -71,7 +119,9 @@ class VScrollbar {
 
   boolean over() {
     if (mouseX > xpos && mouseX < xpos+swidth &&
-      mouseY > ypos && mouseY < ypos+sheight) {
+      mouseY > ypos+swidth && mouseY < ypos+sheight-swidth) {
+      //if (mouseX > xpos && mouseX < xpos+swidth &&
+      //  mouseY > ypos && mouseY < ypos+sheight) {
       return true;
     } else {
       return false;
@@ -80,9 +130,11 @@ class VScrollbar {
 
   void display() {
     // display scroll bar.  
-    fill(255);
+    fill(255);     // white
     stroke(0); 
     rect(xpos, ypos, swidth, sheight);
+
+    showButtons();
 
     //if (over || locked) {
     //  fill(255, 255, 0);
@@ -115,6 +167,76 @@ class VScrollbar {
 
     newspos = map(value, 0, maxValue, sposMin, sposMax+swidth); 
     newspos = constrain(newspos, sposMin, sposMax);
+  } // method
+  //
+
+  void mousePressed1() {
+    // 2 scroll buttons  
+    boolean done2=false;
+    for (int i=0; i<btnLength; i++) {
+      if (rectButtons.get(i).over() && !done2) {
+        done2 = true;
+        doCommandMouseVS(i); // very important function 
+        break;
+      } // if
+    } // for
+  }//method
+
+  void doCommandMouseVS(int commandNumber) {
+
+    switch (commandNumber) {
+
+      // scrolling 
+    case 0:
+      // scrolling 
+      newspos--; 
+      change1() ; 
+      //if (tboxHelp.start<0)
+      //  tboxHelp.start=0;
+      break;
+
+    case 1:
+      // scrolling
+      newspos++;
+      change1() ; 
+      //tboxHelp.start++;
+      //if (tboxHelp.start > tboxHelp.editorArray.length-tboxHelp.linesInEditor)
+      //  tboxHelp.start=tboxHelp.editorArray.length-tboxHelp.linesInEditor;
+      //if (tboxHelp.start<0)
+      //  tboxHelp.start=0;
+      break;
+
+    default:
+      println ("Error 289: unknown command int: "
+        +commandNumber); 
+      exit(); 
+      break;
+    }//switch
+  }//func
+
+  void change1() {
+
+    newspos = constrain2(int(newspos), sposMin, sposMax);
+    updated=true;
+    // store time since last mouse moved / pressed  
+    timeSinceLastMouseMoved = millis();
+
+    if (abs(newspos - spos) > 1) {
+      spos = spos + (newspos-spos)/loose;
+    }
+  }
+
+  void showButtons() { 
+    // show buttons for all states  
+
+    for (RectButton btn : rectButtons) {
+      btn.update();
+      btn.display();
+    }
+    // buttons 
+    for (RectButton btn : rectButtons) {
+      btn.toolTip();
+    }
   } // method
   //
 } //class 

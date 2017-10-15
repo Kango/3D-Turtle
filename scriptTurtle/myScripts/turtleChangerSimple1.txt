@@ -1,0 +1,46 @@
+// 
+
+penUp
+
+
+Turtle
+
+forward 22
+
+Arrow 
+
+forward 22
+
+Plane
+
+forward 22
+
+loadShapeFunction
+shapeLoaded
+
+// -----------------------------------------------------
+
+LEARN loadShapeFunction [
+    	
+    	// function: Load a shape and give it texture and scale.
+    
+    	// Rotate it so it has the orientation needed 
+    	
+    	// load shape with name, texture and scale
+    	LOADSHAPE biplane.obj diffuse_512.png 1.7
+    
+    	// calculate x angle rotation (radians)
+    	LET XRotate HALF_PI
+    	
+    	MULT XRotate -1.0
+    	
+    	// rotate the shape by x,y,z (radians)
+    	ROTATESHAPE XRotate PI 0
+    	
+]
+
+
+
+
+
+

@@ -28,7 +28,7 @@ void handleStateManually() {
   popMatrix();
   // status bar (HUD) 
   statusBar();
-  statusBarForManually(textForStatusBarManuallyOnTopScreen);
+  statusBarUpperLeftCorner(textForStatusBarManuallyOnTopScreen);
 }
 
 void handleStateManuallyHelp() {

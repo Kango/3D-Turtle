@@ -1,0 +1,47 @@
+// 3D Cube 
+
+sinkJump 40
+
+Let N 0
+
+pushPos Home
+
+repeat 4 (
+
+    popPos Home
+
+    sinkJump N
+
+    repeat 4 (
+    
+        // left 90
+    
+        oneItem
+    
+    )
+
+    add N 20
+
+)
+
+noseDown 90
+
+// -------------------------
+
+Learn oneItem [
+
+    ForwardJump 20
+    
+    box
+    
+    // BackwardJump 20
+
+]
+
+
+
+
+
+
+
+

@@ -143,6 +143,13 @@ class EditorLine {
       String val = hmHelpCommandsGlobal.get(textArrayLocal[0]);
       if (val!=null) {
         helpTextCmd=val;
+      } else {
+        if (textArrayLocal.length>1) {
+          String val1 = hmHelpCommandsGlobal.get(textArrayLocal[0]+textArrayLocal[1]);
+          if (val1!=null) {
+            helpTextCmd=val1;
+          }//if
+        }//if
       }
     }//else 
     //

@@ -3,36 +3,65 @@
 
 void stateManagement() {
 
+  if (state!=stateManually)
+    background(192);
+
   switch (state) {
 
   case stateWelcomeScreen:
     // welcome screen
-    camera.reset(); 
-    pushMatrix();
-    stateText="\n\nWelcome to Turtle Script. \n\n"
+    background(0);
+    camera.beginHUD();
+    // the main rect (splash screen)
+    stroke(255);
+    fill(111);
+    float dist = 45; 
+    rect (dist, dist, 
+      width-dist*2, height-dist*2); 
+
+    stateText=
+      "\n\nWelcome to Turtle Script. \n\n"
       +"This program is about a Turtle. "
       +"The Turtle carries a pen so it draws a line wherever it walks. \n"
       +"You can tell the Turtle what to draw. You tell it by writing a Turtle Script and let the Turtle read and \nfollow your Turtle Script. \n"
-      +"It is a 3D Turtle so it can draw on the screen's surface but also dive into it.\n"
+      +"It is a 3D Turtle so it can draw on the screen's surface but also dive into the screen and draw in 3D.\n"
       +"You can also just play with the Turtle using cursor keys and other keys (Icon: Turtle with cursor keys).\n\n"
       +"In the Editor click the green arrow icon > to run your Turtle Script,\nin run mode hit space to go back.\n"
       +"Click the ?-sign for more Help.\n\n"
       +"Don't forget to save your Turtle Script.\n\n\n"
       +"Hit any key to go on. \n\n" ;
     statusBarText = "Welcome to the Turtle. Press Space Bar to go to the Turtle Script Editor. ";
-    t.sidewaysRightJump(33); 
-    t.forwardJump(54);
-    t.right(180+45); 
+    camera.endHUD();
+
+    // draw turtle 
+    pushMatrix();
+    camera.reset(); 
+    t.sidewaysRightJump(3); 
+    t.forwardJump(63); 
+    t.right(90);
+    t.forwardJump(43);
+    t.right(-90);
+    //t.forwardJump(94);
+    t.riseJump(44);
+    t.right(180+45);
     t.noseUp(45);
-    lights(); 
     t.rollRight(angle1);
+    lights();     
     t.showTurtle(); 
     angle1 += speedAngle; 
     popMatrix();
+
     // display editor and texts 
+    noLights(); 
     camera.beginHUD();
-    // status bar (HUD)
-    statusBar(); 
+    hint(DISABLE_DEPTH_TEST);
+    textMode(SHAPE);
+    fill(0);
+    textFont(font);
+    textMode(MODEL);
+    text(stateText, 59, 24); 
+    // end HUD 
+    hint(ENABLE_DEPTH_TEST);
     camera.endHUD();
     break;
 
@@ -45,10 +74,13 @@ void stateManagement() {
     // RUN the Turtle Script 
     avoidClipping(); 
     lights();
-    camera.setActive(true); 
+
+    camManager();
+
     statusBarText = "RUN MODE. L - toggle line type, "
       +"Mouse to rotate and pan camera (peasycam), "
-      +"Mouse wheel to zoom+-, s - save one image, f to save a serie of images, r to reset camera, a to toggle TurtleBody, Esc to quit.";
+      +"Mouse wheel to zoom+-, s - save one image, f to save a serie of images, "
+      +"r to reset camera, a - Turtle Shape, c Camera rotates, Esc to quit.";
     background(0);
     pushMatrix();
     stateText="";
@@ -72,7 +104,7 @@ void stateManagement() {
         PShape s = (PShape) me.getValue();
         shape(s, 0, 0);
       }//for
-    }//if
+    } //if
 
     // status bar (HUD) ---  
     statusBar(); 
@@ -80,7 +112,9 @@ void stateManagement() {
 
   case stateError: 
     // error in code of the script 
-    pushMatrix();
+    camera.reset(); 
+    pushMatrix();  
+    lights();
     stateText="\n\n An Error occured \n\n\n\n"
       +errorMsg;
     statusBarText = "Error MODE. Space Bar to go back. ";
@@ -101,9 +135,8 @@ void stateManagement() {
         savePath+=".txt"; // very rough approach...
       }
       saveStrings(savePath, tbox1.getTextAsArray());
-
+      loadedFile = savePath;
       fileName=nameFromPath(savePath);
-
       if (fileName.equals(""))
         fileName="<Not a file>";
     }//if
@@ -113,7 +146,6 @@ void stateManagement() {
 
   case stateWaitForLoad:
     // wait
-
     // check if the input has been made: 
     if (!loadPath.equals("")) {
       // yes, waiting is over 
@@ -135,10 +167,11 @@ void stateManagement() {
         temp=null;          
         tbox1.start=0; 
         tbox1.initNewLine();
+        loadedFile = loadPath; 
         fileName=nameFromPath(loadPath);
         if (fileName.equals("")) {
           fileName="<Not a file>";
-        }
+        }//if
       }//else
     } // outer if
     // status bar (HUD) 
@@ -226,35 +259,47 @@ void stateManagement() {
     handleStateManuallyHelp();
     break; 
 
-  case stateBrowseFilesStartNewFile: 
+  case stateBrowseFilesStartNewFile:
+    // Browse here means the special mode where you can visually 
+    // go through your files with cursor keys 
     // browse start new file
     background(0);
-    textSize(24); 
-    fill(255);
-    text("Please wait................", width/2-110, height/2); 
+
     loadPath   = filesForBrowse[indexForBrowse].getAbsolutePath();
     loadedFile = filesForBrowse[indexForBrowse].getAbsolutePath();
-    // classical loading 
-    String[] temp = loadStrings(loadPath);
-    tbox1.initText(join(temp, "\n")); 
-    temp=null;          
-    tbox1.start=0; 
-    tbox1.initNewLine();
-    fileName=nameFromPath(loadPath);
-    if (fileName.equals("")) {
-      fileName="<Not a file>";
+
+    if (!isFolderMy(loadPath)) {
+      // classical loading 
+      String[] temp = loadStrings(loadPath);
+      // fill editor 
+      tbox1.initText(join(temp, "\n")); 
+      temp=null;          
+      tbox1.start=0; 
+      tbox1.initNewLine();
+      loadedFile = loadPath; 
+      fileName=nameFromPath(loadPath);
+      if (fileName.equals("")) {
+        fileName="<Not a file>";
+      }
     }
     state=stateBrowseFiles;
+    camera.beginHUD();
+    textSize(24); 
+    fill(255);
+    text("Please wait......", width/2-110, height/2);
+    camera.endHUD();
     break;
 
   case stateBrowseFiles: 
-    // browse 
-    // RUN the Turtle Script 
+    // browse file, run the file.
     avoidClipping(); 
     lights();
-    camera.setActive(true); 
+
+    camManager();
+
     statusBarText = "Browse MODE. Loads and runs Turtle Scripts from Hard Drive. "
-      +"Crs left and right to load, Esc to quit. The current file is loaded in the Editor.";
+      +"Crs left and right to load, Esc to quit. The current file is loaded in the Editor. "
+      +"You can use peasyCam and see the Turtle Scripts in the Editor. Use c for Camera rotation.";
     background(0);
     pushMatrix();
     stateText="";
@@ -263,14 +308,27 @@ void stateManagement() {
     t.setColor(color(0, 255, 0));
     fill(t.turtleColor);  
     t.penDown(); 
-    parser.parse(tbox1.getText());
+
+    // RUN the Turtle Script
+    parser.parse(tbox1.getText());  // The core 
+
     popMatrix();
+
+    // show all path Recording Shapes ---
+    if (hmPathRecordingShapes!=null && !t.suppressPath ) {
+      // Using an enhanced loop to iterate over each entry in the hashmap 
+      for (Map.Entry me : hmPathRecordingShapes.entrySet()) {
+        PShape s = (PShape) me.getValue();
+        shape(s, 0, 0);
+      }//for
+    } //if
+
     // status bar (HUD) 
     statusBar();
     String t1="Browse Mode. Gives you an overview of your files. Current file: "
-      +loadedFile
+      +fileName
       +"."; 
-    statusBarForManually(t1); 
+    statusBarUpperLeftCorner(t1); 
     break; 
 
   default:
@@ -282,6 +340,7 @@ void stateManagement() {
     break;
     //
   } //switch
+  //
 } //func 
 
 // ---------------------------------------------------------------------------
@@ -361,8 +420,8 @@ void handleStateEdit() {
   stroke(0); 
   textSize(14); 
   textAlign(LEFT, BASELINE); 
-  textArrowRight(commandRoll.x+commandRoll.w+27, commandRoll.y+10, 
-    tboxEditHelp2.x-20, commandRoll.y+10); 
+  textArrowRight(commandRoll.x+commandRoll.w+27, commandRoll.y + commandRoll.h/2, 
+    tboxEditHelp2.x-20, commandRoll.y + commandRoll.h/2); 
 
   // help text for command roll 
   textSize(14); 
@@ -393,5 +452,5 @@ void handleStateEdit() {
     +tbox1.currentLine, width/2-155, height-55);   
   showButtons();
   camera.endHUD();
-}
+}//func 
 //

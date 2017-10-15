@@ -1,8 +1,10 @@
 // Demo for startPath
 
-startPath 
+startPath Test
 
-triangle 
+penUp
+Triangle 
+penDown
 
 fillPath 
 
@@ -17,6 +19,7 @@ LEARN Triangle [
     forward 30
     right 120
 ]
+
 
 
 

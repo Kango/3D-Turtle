@@ -1,0 +1,49 @@
+// 3D Cube 
+
+sinkJump 40
+
+Let sideValue 0
+
+pushPos Home // Home position
+
+repeat 4 (
+
+    popPos Home
+
+    sidewaysRightJump sideValue
+
+    pushPos Home2
+
+    Let N 0
+
+    repeat 4 (
+
+        popPos Home2
+
+        sinkJump N
+
+        repeat 4 (
+            jumpAndBox            
+        )
+
+        add N 20
+
+    )
+
+    add sideValue 20
+
+)
+
+noseDown 90
+
+// -------------------------
+
+Learn jumpAndBox [
+
+    ForwardJump 20
+    
+    box
+    
+]
+
+

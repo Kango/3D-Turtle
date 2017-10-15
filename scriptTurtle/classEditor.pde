@@ -244,7 +244,7 @@ class TextBox {
         }//if          
         initNewLine();
       } else {
-        println (keyCode);
+        println ("keyCode: "+keyCode);
       }//else
     }//if
     // -------------
@@ -265,10 +265,66 @@ class TextBox {
         editorArray[currentLine].leftText += str(key);
         writeLineBackInArray();
       } else {
-        // ignore
-        println (key);
-      }
-      //
+
+        switch (keyCode) {
+
+        case 2: 
+          // POS1
+          writeLineBackInArray();
+          currentColumn=0;
+          initNewLine();
+          break;
+
+        case 3: 
+          // END
+          writeLineBackInArray();
+          currentColumn = editorArray[currentLine].text1.length();
+          initNewLine();
+          break;
+
+        case 16:
+          //pg UP
+          // 6 lines in text UP 
+          writeLineBackInArray(); 
+          currentLine-=6;
+          if (currentLine<0)
+            currentLine=0;
+          // Do we have to scroll? 
+          if (currentLine<start) {
+            start-=5;
+            if (start<0)
+              start=0;
+          }          
+          initNewLine();
+          break; 
+
+        case 11:
+          //pg DOWN
+          // 6 lines down in text 
+          writeLineBackInArray();    
+          currentLine+=6;
+          if (currentLine>editorArray.length-1)
+            currentLine=editorArray.length-1;
+          // Do we have to scroll?  
+          if (currentLine>=start+linesInEditor) {
+            start+=5;
+            if (start+linesInEditor > editorArray.length) { 
+              start = editorArray.length-linesInEditor;
+              if (start<0) 
+                start=0;
+            }// if
+          }//if          
+          initNewLine();
+          break; 
+
+        default:
+          // ignore
+          println (key);
+          println ("keyCode: "+keyCode);
+          break;
+        }//switch
+      }//else
+      //---
     } //else
     //
   } //method

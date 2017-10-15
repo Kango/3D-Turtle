@@ -2,7 +2,7 @@
 // class: pair of command (cmd) plus its help 
 // not much here yet
 
-class commandsWithItsHelpTexts {
+class CommandsWithItsHelpTexts {
 
   // pair of command (cmd) plus its help text
 
@@ -13,7 +13,7 @@ class commandsWithItsHelpTexts {
   String category=""; 
   String exampleParameter=""; 
 
-  commandsWithItsHelpTexts(String cmd_, String help_) {
+  CommandsWithItsHelpTexts(String cmd_, String help_) {
     // constr
     cmd   = cmd_;
     help  = help_;

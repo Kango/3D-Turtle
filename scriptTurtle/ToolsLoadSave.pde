@@ -2,7 +2,7 @@
 // manage load and save
 
 // ------------------------------------------------------------
-// init loading and saving 
+// init: loading and saving 
 
 void loadProgram() {
   //
@@ -15,9 +15,15 @@ void loadProgram() {
 void saveProgram() {
   // simple Save or Save As....
   if (!loadedFile.equals("")) {
-    if (fileExists(loadedFile)) {
+    if (fileExistsMy(loadedFile)) {
       // just save (with old name), overwrite file 
       saveStrings(loadedFile, tbox1.getTextAsArray());
+    } else {
+      // Error
+      state=stateError; 
+      errorMsg="File "
+        +loadedFile
+        +"\ndoesn't seem to exist. \nPlease use Save As...";
     }
   } else {
     // Save As....
@@ -27,7 +33,7 @@ void saveProgram() {
     File start1 = new File(sketchPath("")+"/myScripts/*.txt");
     selectOutput("Select a file to write the Turtle Script to", "fileSelectedForSave", start1);
   }
-}
+}//func
 
 void saveProgramAs () {
   // Save As....
@@ -46,19 +52,17 @@ void fileSelectedForSave(File selection) {
     // println("Window was closed or the user hit cancel.");
     state=stateEdit;
   } else {
-    savePath=selection.getAbsolutePath();
-    loadedFile=selection.getAbsolutePath();
+    savePath   = selection.getAbsolutePath();
     println("User selected " + savePath);
   }
 }
 
 void fileSelectedForLoad(File selection) {
   if (selection == null) {
-    // println("Window was closed or the user hit cancel.");
+    // Window was closed or the user hit cancel.
     state=stateEdit;
   } else {
-    loadPath   = selection.getAbsolutePath();
-    loadedFile = selection.getAbsolutePath();
+    loadPath = selection.getAbsolutePath();
     println("User selected " + selection.getAbsolutePath());
   }
 }
@@ -66,21 +70,15 @@ void fileSelectedForLoad(File selection) {
 // ------------------------------------------------
 // tools
 
-String nameFromPath(String fileName) {
-
-  File file = new File(fileName);
+String nameFromPath(String fileName1) {
+  File file = new File(fileName1);
   String result = file.getName();
   return result;
 } 
 
-boolean fileExists(String fileName) {
-  File file=new File(fileName);
-  String result = file.getName(); 
+boolean fileExistsMy(String fileName1) {
+  File file=new File(fileName1);
   boolean exists = file.exists();
-  if (!exists) {
-    return false;
-  } else {
-    return true;
-  }
-} 
+  return exists;
+}///func  
 //

@@ -6,11 +6,12 @@
  * credits: Jeremy Douglass - thank you! 
  * https:// forum.processing.org/two/discussion/20706/how-3d-turtle-like-in-logo-but-3d-math-problem
  *
- * Thanks to PeasyCam 
+ * Thanks to Jonathan (PeasyCam) 
  * Thanks to GoToLoop for the text input area
  * Thanks for drawLine programmed by James Carruthers
  * Thanks to Calsign
- *
+ * Thanks to koogs
+ * Thanks for the plane to https : // opengameart.org/content/low-poly-biplane
  */
 
 // imports --------------------
@@ -29,11 +30,16 @@ Turtle t;
 // the parser (state RUN)
 Parse parser = new Parse();
 
-// the editor (state edit)
+// the editor box (state edit)
 TextBox tbox1;
+
+// further classes ------------
 
 // state edit: the "roll" for the commands
 CommandRoll commandRoll;
+
+// state edit: the content for the command-roll (the commands)
+CommandsWithItsHelpTexts[] arrCmds; 
 
 // state edit: side boxes with no editor, only text displaying
 TextBoxDisplayOnly tboxEditHelp1, tboxEditHelp2; 
@@ -44,7 +50,7 @@ TextBoxDisplayOnly tboxLogFile1, tboxLogFile2;
 // state HELP
 TextBoxDisplayOnly tboxHelp; 
 
-// the states ----------------
+// the states -----------------------------------------------------
 
 // program logic: states 
 final int stateWelcomeScreen = 0;  // unique numbers
@@ -61,15 +67,19 @@ final int stateBrowseFilesStartNewFile = 10;
 final int stateBrowseFiles             = 11; 
 int state = stateWelcomeScreen;  // current state
 
+// program version ---------------------------------------------------
+
+// program version
+final String versionString = "Version 0.1.3178";
+
 // For managing load and save ----------------------------------------
 
-String savePath=""; 
-String loadPath=""; 
-boolean loadWithInsert=false; 
+String savePath="";  // for the save dialog 
+String loadPath="";  // for the load dialog ONLY 
+boolean loadWithInsert=false;  // load a new file or insert into the code? 
 
 String loadedFile = ""; 
-
-String fileName = ""; 
+String fileName = ""; // for the dispay in edit mode 
 
 // For the screen Buttons -------------------------------------
 
@@ -77,41 +87,37 @@ String fileName = "";
 // standard is false 
 final boolean showButtonsForDebugging = false;  
 
-// how many buttons for edit mode 
-final int btnLengthInMainMenu = 14;  // (in edit mode (upper left corner))
-final int btnLengthInLogFile  = 4;   // log file mode
-final int btnLengthInHelp     = 2;   // Help mode
+// how many buttons for different  modes 
+final int btnLengthInMainMenu = 14;  // in edit mode (upper left)
+final int btnLengthInLogFile  = 4;   // log file mode: 2x scrolling
+final int btnLengthInHelp     = 2;   // Help mode: scrolling
 
-final color colYellow = color(244, 244, 44);
+// the buttons: 
+ArrayList<RectButton> rectButtons = new ArrayList(); 
+ArrayList<RectButton> rectButtonsStateLogFile = new ArrayList(); 
+ArrayList<RectButton> rectButtonsStateHelp = new ArrayList(); 
 
 boolean locked;
 
-// colors Buttons 
+// colors for Buttons et al. 
 final color col1 = #ff0000;
 final color col2 = #ffff00;
 final color col3 = #000000;
+final color colYellow = color(244, 244, 44);
 
 // for the tool tip text  
-int timeSinceLastMouseMoved=millis(); // store time since last mouse moved / pressed
-
-ArrayList<RectButton> rectButtons = new ArrayList(); 
-
-ArrayList<RectButton> rectButtonsStateLogFile = new ArrayList(); 
-
-ArrayList<RectButton> rectButtonsStateHelp = new ArrayList(); 
+int timeSinceLastMouseMoved;  // store time since last mouse moved / pressed
 
 // for browse files -----------------------------------------
 
 File[] filesForBrowse; 
 int indexForBrowse=0; 
 
-// other variables --------------
+// other variables -----------------------------------------
 
-// show the recorded shape 
+// show the recorded shapes that the turtle has recorded 
 // The PShape objects
 HashMap<String, PShape> hmPathRecordingShapes = new HashMap<String, PShape>();
-
-String versionString = "Version 0.1.3176";
 
 // Misc 
 String stateText     =""; 
@@ -125,16 +131,23 @@ String savingFramesFolder="";
 // HashMap for showing help for commands 
 HashMap<String, String> hmHelpCommandsGlobal = new HashMap<String, String>();
 
-// HashMap 
+// HashMap to store matrix  
 HashMap<String, PMatrix3D > hmStoreTurtleMatrix = new HashMap<String, PMatrix3D>();
 
-commandsWithItsHelpTexts[] arrCmds; 
+// FloatDict for Variables
+FloatDict fdVariables = new FloatDict();  // for variables 
 
+// help text 
 String helpTextCmdRoll=""; 
 
 // angle for rotating when rotating turtle  
 float angle1; 
 final float speedAngle=3.972;
+
+boolean cameraTourRotate=false; 
+float cameraTourRotateAngle=0.0; 
+float cameraTourRotateHeight=90.0; 
+float cameraTourRotateHeightAdd=0.0;  // 0.0 means none 
 
 // font 
 PFont font; 
@@ -152,14 +165,17 @@ String manuallyLastCommand="";
 String cmdsWithOneParameter =
   "#FORWARD#BACKWARD#RIGHT#LEFT#NOSEDOWN#NOSEUP#ROLLRIGHT#ROLLLEFT#"
   +"#SINK#RISE#SIDEWAYSRIGHT#SIDEWAYSLEFT#FORWARDJUMP#BACKWARDJUMP#ELLIPSE#"
-  +"#SIDEWAYSLEFTJUMP##SIDEWAYS###SIDEWAYSRIGHTJUMP#PUSHPOS#POPPOS#STARTPATH#SHOWPATH#";
+  +"#SIDEWAYSLEFTJUMP##SIDEWAYS###SIDEWAYSRIGHTJUMP#PUSHPOS#POPPOS#STARTPATH#SHOWPATH#"
+  +"SINKJUMP#RISEJUMP#";
 
-// other commands with 0 or more than 1 parameter
+// other commands with 0 or more than 1 parameter (NOT one parameter)
 String cmdsOther =
   "#LEARN#REPEAT#END#BOX#SPHERE#)#]#//#SHOWTURTLE#ARROW#"
   +"TURTLE#COLOR#BACKGROUND#GRIDON#GRIDOFF#PENDOWN#PENUP#"
   +"GRIDCOLOR#ELLIPSE#LET#ADD#SUB#MULT#DIV#HELP#TEXT#TEXTSIZE#"
-  +"LINE#POINT#PUSHMATRIX#POPMATRIX#RESETMATRIX#FILLPATH#SUPPRESSPATH#";
+  +"LINE#POINT#PUSHMATRIX#POPMATRIX#RESETMATRIX#FILLPATH#SUPPRESSPATH#TURTLEBODY#"
+  +"SHOWTURTLEASTURTLE#SHOWTURTLEASARROW#SHOWTURTLEASPLANE#PLANE#"
+  +"LOADSHAPE#ROTATESHAPE#SHOWTURTLEASSHAPE#SHAPELOADED#";
 
 // ------------------------------------------------------------
 // processing core 
@@ -172,7 +188,8 @@ void setup() {
   t = new Turtle();
 
   // focus the cam on the center 
-  camera = new PeasyCam(this, 25, 25, -25, 100);
+  camera = new PeasyCam(this, 25, 25, 25, 100);
+  // camera.setSuppressRollRotationMode();  // Permit pitch/yaw only
 
   // font 
   font=createFont("Arial", 24);
@@ -197,17 +214,19 @@ void setup() {
   // command roll
   instantiateCommandRoll();
 
+  // and the help texts 
   initHelpForCommands();
 
   // set the filename text 
   if (fileName.equals("")) {
     fileName="<Not a file>";
   }
+
+  // for tool tip text
+  timeSinceLastMouseMoved = millis();
 } //func
 
 void draw() {
-  if (state!=stateManually)
-    background(192);
 
   // the core (see tab states)
   stateManagement();

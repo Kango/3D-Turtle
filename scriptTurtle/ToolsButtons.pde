@@ -146,7 +146,7 @@ void setupButtons() {
     16, 16);
 
   // ------------------------------------------------------------------
-  // Init Buttons for Logfile  
+  // Init Buttons for Help State  
 
   for (int x=0; x < btnLengthInHelp; x++) {    
     // Using a multiple of x means the buttons aren't all on top of each other (and 20 is the distance to the left screen border)
