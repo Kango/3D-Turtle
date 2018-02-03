@@ -1,6 +1,9 @@
 
 // the different states
 
+// stateManagement() is called from draw() and in turn handles the states (and sometimes calls a sub-function all starting with "handleState..." and which are also 
+// located in this tab)
+
 void stateManagement() {
 
   if (state!=stateManually)
@@ -31,6 +34,9 @@ void stateManagement() {
       +"Don't forget to save your Turtle Script.\n\n\n"
       +"Hit any key to go on. \n\n" ;
     statusBarText = "Welcome to the Turtle. Press Space Bar to go to the Turtle Script Editor. ";
+
+    showButtonsWelcome();
+
     camera.endHUD();
 
     // draw turtle 
@@ -186,7 +192,6 @@ void stateManagement() {
     hint(DISABLE_DEPTH_TEST);
     noLights();
     textMode(SHAPE);
-    // headers
 
     fill(0);
     textSize(24); 
@@ -331,9 +336,60 @@ void stateManagement() {
     statusBarUpperLeftCorner(t1); 
     break; 
 
+  case stateMenuHelp: 
+    background(110);
+
+    previousState=stateMenuHelp; 
+
+    camera.beginHUD();
+    hint(DISABLE_DEPTH_TEST);
+    noLights();
+    textMode(SHAPE);
+
+    textSize(19) ;
+    textAlign(CENTER);
+    text("Help Menu for the Turtle", width/2, 75);
+    textAlign(LEFT);
+    showButtonsMenuHelp();
+
+    camera.endHUD();
+    break; 
+
+  case stateShowEditorHelpAsImage:
+    background(110);
+
+    camera.beginHUD();
+    hint(DISABLE_DEPTH_TEST);
+    noLights();
+    textMode(SHAPE);
+
+    image(imgShowEditorHelpAsImage, 0, 0);
+
+    camera.endHUD();
+    break; 
+
+  case stateShowButtonsInEditor:
+    background(110);
+
+    camera.beginHUD();
+    hint(DISABLE_DEPTH_TEST);
+    noLights();
+    textMode(SHAPE);
+    fill(255);
+    textSize(27);
+    text("Help for the Buttons in the Turtle Editor", width/2+100, 55);
+    textSize(17);
+    int k=0;
+    for (RectButton btn : rectButtons) {
+      btn.displaySideways(k);
+      k++;
+    }
+    camera.endHUD();
+    break; 
+
   default:
     //error
-    println ("Error , unknown state ++++++++++++++++++++++   "
+    println ("Error in tab states, unknown state ++++++++++++++++++++++   "
       +state);
     exit();
     state=0;
@@ -451,6 +507,103 @@ void handleStateEdit() {
   text("Line number: "
     +tbox1.currentLine, width/2-155, height-55);   
   showButtons();
+  camera.endHUD();
+}//func 
+
+void handleStateManually() {
+
+  // called from stateManagement() 
+
+  if (keyPressed) {
+    keyPressedForManuallyState_ManyTimes();
+  }
+
+  avoidClipping(); 
+  lights();
+
+  camManager();
+
+  // camera.setActive(true); 
+  statusBarText = "Manual MODE. Steer the Turtle with keys. H - special Help. Use Cursor, wasd, ijkl etc. to steer Turtle. Backspace - undo. "
+    +"Mouse to rotate and pan camera (peasycam), "
+    +"Mouse wheel to zoom+-, r to reset camera, Esc to quit.";
+  background(0);
+  pushMatrix();
+  stateText="";
+  stroke(211); 
+  t.drawGridOnFloor();
+  t.setColor(color(0, 255, 0));
+  fill(t.turtleColor);  
+  t.penDown(); 
+  parser.parse(tbox1.getText());
+  t.showTurtle();
+  popMatrix();
+
+  // status bar (HUD) 
+  statusBar();
+  statusBarUpperLeftCorner(textForStatusBarManuallyOnTopScreen);
+
+  camera.beginHUD();
+  noLights();  
+  hint(DISABLE_DEPTH_TEST);
+  textMode(SHAPE);
+
+  //--------------------------------------
+  // Show data in a separate box in the upper right corner 
+  fill(colDarkGray);
+  stroke(0); // black frame
+  rect( width-123, 24, 120, 136);
+
+  fill(255);
+  textSize(11);
+  // rotation values 
+  t.monitorAngleX=t.monitorAngleX%360;
+  t.monitorAngleY=t.monitorAngleY%360;
+  t.monitorAngleZ=t.monitorAngleZ%360;
+
+  // position values 
+  String str1 = "x rotation: "+round(t.monitorAngleX)+"\n"
+    + "y rotation: "+round(t.monitorAngleY)+"\n"
+    + "z rotation: "+round(t.monitorAngleZ)+"\n\n";
+
+  String str2 = "x position: "+round(t.monitorPosX)+"\n"
+    + "y position: "+round(t.monitorPosY)+"\n"
+    + "z position: "+round(t.monitorPosZ)+"\n";
+
+  text(str1+str2, width-110, 44);
+
+  camera.endHUD();
+}//func 
+
+void handleStateManuallyHelp() {
+  background(0);
+  statusBarText = "Help MODE for Manual Input Mode. Space Bar to go back. ";
+  // t.help(); 
+  // status bar (HUD)
+  // display a text 
+  camera.beginHUD();
+  hint(DISABLE_DEPTH_TEST);
+  noLights();
+  textMode(SHAPE);
+
+  fill(255);
+  textMode(SHAPE);
+
+  textSize(14); 
+  String helpText1 = 
+    textForManuallyHelp(); 
+
+  text( helpText1, 18, 25);
+
+  // show the icon 
+  image(imgSteerTurtle, 
+    width-440, 111);
+  stroke(255);
+  noFill();   
+  rect(width-440, 111, 
+    imgSteerTurtle.width, imgSteerTurtle.height);
+
+  statusBar();
   camera.endHUD();
 }//func 
 //

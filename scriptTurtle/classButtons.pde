@@ -16,15 +16,18 @@ class RectButton extends Button {
     String iText, 
     String iToolTipText, 
     PImage iBtnImage, 
-    int cmdIDTemp) {
+    int icmdIDTemp) {
 
     x = ix;
     y = iy;
+
     sizeX = isizeX;
-    sizeY = isizeY;    
+    sizeY = isizeY;  
+
     basecolor = icolor;
     highlightcolor = ihighlight;
     currentcolor = basecolor;
+
     Exists = iExist;
 
     Tag = iTag; 
@@ -35,8 +38,8 @@ class RectButton extends Button {
 
     btnImage=iBtnImage;
 
-    cmdID=cmdIDTemp;
-  }
+    cmdID=icmdIDTemp;
+  }  // constr
 
   boolean over() {
     if ( overRect(x, y, sizeX, sizeY) ) {
@@ -49,42 +52,99 @@ class RectButton extends Button {
   }
 
   void display() {
-    if (Exists) {
 
-      showButtonForDebugging(); 
+    if (!Exists) 
+      return; 
 
-      if (btnImage!=null) {
-        // Image 
-        image(btnImage, x, y);
+    // showButtonForDebugging(); 
 
-        if (showButtonsForDebugging) {
-          // rect 
-          stroke (255); 
-          strokeWeight(1); 
-          //fill(currentcolor, 30);
-          noFill(); 
-          rect(x, y, btnImage.width, btnImage.height);
-        }
-      } //   if (btnImage!=null) 
-      else  if (Text != "") {
+    if (btnImage!=null) {
+      // Image 
+      image(btnImage, x, y);
 
-        // this is not in use (buttons don't have text)
-
+      if (showButtonsForDebugging) {
         // rect 
-        stroke (ButtonStrokeColor); 
-        strokeWeight(0); 
-        fill(currentcolor, 30);
-        rect(x, y, sizeX, sizeY);        
+        stroke (255); 
+        strokeWeight(1); 
+        //fill(currentcolor, 30);
+        noFill(); 
+        rect(x, y, btnImage.width, btnImage.height);
+      }
+    } // if (btnImage!=null)
+    // --------------------
+    else if (!Text.equals("")) {
 
-        //text
-        fill(0, 102, 153);
-        textAlign(CENTER);
-        textSize(16) ;
-        text(Text, (x + (sizeX / 2.0)), (y + (sizeY / 2.0))+5);
-        textAlign(LEFT);
-      } // if (Text != "")
-    } // if exists
+      // rect 
+      stroke (ButtonStrokeColor); 
+      strokeWeight(1); 
+      if (specialGreenAppearance) {
+        fill(currentcolor);
+        rect(x, y, sizeX, sizeY-2, 14);
+      } else {
+        // fill(0, 255, 0);
+        fill(255);
+        rect(x, y, sizeX, sizeY-2);
+      }
+
+      //text
+      fill(0);
+      textAlign(CENTER);
+      textSize(19) ;
+      text(Text, (x + (sizeX / 2.0)), (y + (sizeY / 2.0))+5);
+      textAlign(LEFT);
+    } // if 
+    // ---------------------------
+    else {
+      println ("Error 1093: method display: button with no image and no text");
+      exit();
+    }//else 
+    //
   } // method display
+
+  void displaySideways(int i) {
+
+    // for help screen of the buttons 
+
+    if (!Exists) 
+      return; 
+
+    showButtonForDebugging(); 
+
+    if (btnImage!=null) {
+      // Image 
+      image(btnImage, 12, 22+i*(btnImage.height+2));
+      text(ToolTipText, 12+53+5, 22+i*(btnImage.height+2) +27 );
+
+      if (showButtonsForDebugging) {
+        // rect 
+        stroke (255); 
+        strokeWeight(1); 
+        //fill(currentcolor, 30);
+        noFill(); 
+        rect(x, y, btnImage.width, btnImage.height);
+      }
+    } //   if (btnImage!=null)
+    // --------------------
+    else if (!Text.equals("")) {
+
+      // rect 
+      stroke (ButtonStrokeColor); 
+      strokeWeight(1); 
+      fill(currentcolor, 30);
+      // fill(255);
+      rect(12, 22+i*(52+2), 
+        sizeX, sizeY);        
+
+      //text
+      fill(0);
+      textAlign(CENTER);
+      textSize(19) ;
+      text(Text, 12+8, 22+i*(52+2)+15);
+      textAlign(LEFT);
+      text(ToolTipText, 12+53+5, 22+i*(54) +23 );
+    } // if 
+    //
+  }
 
   void showButtonForDebugging() {
 
@@ -143,6 +203,8 @@ class Button {
 
   int cmdID; 
 
+  boolean specialGreenAppearance=false;
+
   void update() {
     if (over()) {
       // Mouse over 
@@ -199,8 +261,11 @@ class Button {
   } // over 
 
   boolean overRect(int x, int y, int width, int height) {
-    if (mouseX >= x && mouseX <= x+width &&
-      mouseY >= y && mouseY <= y+height) {
+    if (mouseX >= x && 
+      mouseX <= x+width &&
+      mouseY >= y && 
+      mouseY <= y+height) {
+      //
       return true;
     } else {
       return false;

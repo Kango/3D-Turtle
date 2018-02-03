@@ -26,12 +26,23 @@ void keyPressed() {
     break;
 
   case stateHelp:
-  case stateError:
-  case stateShowLogfile:
     // just go back to Edit Mode
     if (key==ESC) {
       key=0; // kill
     }
+    if (previousState==-1)
+      state = stateEdit;
+    else state = previousState;
+    break; 
+
+  case stateError:
+  case stateShowLogfile:
+  case stateMenuHelp: 
+    // just go back to Edit Mode
+    if (key==ESC) {
+      key=0; // kill
+    }
+    previousState=-1; 
     state=stateEdit; 
     break; 
 
@@ -47,7 +58,9 @@ void keyPressed() {
     if (key==ESC) {
       key=0; // kill Esc
     }
-    state = stateManually;
+    if (previousState==-1)
+      state = stateManually;
+    else state = previousState; 
     break; 
 
   case stateBrowseFilesStartNewFile:
@@ -84,6 +97,20 @@ void keyPressed() {
     if (indexForBrowse>=filesForBrowse.length)
       indexForBrowse=filesForBrowse.length-1;
     state = stateBrowseFilesStartNewFile;
+    break; 
+
+  case stateShowButtonsInEditor: 
+  case stateShowEditorHelpAsImage:
+    // just go back
+    if (key==ESC) {
+      key=0; // kill Esc
+    }
+    if (keyCode==ALT)
+      break;
+    previousState = stateMenuHelp;
+    state = stateMenuHelp; 
+    // store time since last mouse moved
+    timeSinceLastMouseMoved=millis();
     break; 
 
   default:
@@ -160,8 +187,16 @@ void keyPressedForManuallyState_OneTime() {
 
       // ---------------------------------
 
-    case 'c': //  
+    case 'C': //  
       insertALine(  "// -------------------------------", false); 
+      break;
+
+    case 'c':
+      // camera tour rotate: toggle  
+      cameraTourRotate=!cameraTourRotate;
+      if (cameraTourRotate) {
+        camera.setActive(false);
+      }
       break;
 
     case 'v': //  

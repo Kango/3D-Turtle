@@ -32,12 +32,23 @@ void mousePressed() {
 
   case stateWelcomeScreen:
     // this ends the splash screen / the help etc.
-    state = stateEdit;
+
+    boolean done=false;
+    for (int i=0; i<btnLengthInStateWelcome; i++) {
+      if (rectButtonsStateWelcomeScreen.get(i).over() && !done) {
+        done = true;
+        doCommandMouseStateWelcomeScreen(i); // very important function 
+        break;
+      } // if
+    } // for
+
+    if (!done)
+      state = stateEdit;
     break;
 
   case stateShowLogfile:
     // 4 scroll buttons  
-    boolean done=false;
+    done=false;
     for (int i=0; i<btnLengthInLogFile; i++) {
       if (rectButtonsStateLogFile.get(i).over() && !done) {
         done = true;
@@ -68,7 +79,33 @@ void mousePressed() {
     break; 
 
   case stateManuallyHelp:
-    state = stateManually;
+    // just go back from the special help to the
+    // stateManually
+    if (key==ESC) {
+      key=0; // kill Esc
+    }
+    if (previousState==-1)
+      state = stateManually;
+    else state = previousState; 
+    break; 
+
+  case stateMenuHelp: 
+    done2=false;
+    for (int i=0; i<btnLengthInStateMenuHelp; i++) {
+      if (rectButtonsStateMenuHelp.get(i).over() && !done2) {
+        done2 = true;
+        doCommandMouseMenuHelp(i); // very important function 
+        break;
+      } // if
+    } // for
+    break; 
+
+  case stateShowEditorHelpAsImage:
+    state=stateMenuHelp;
+    break; 
+
+  case stateShowButtonsInEditor:
+    state=stateMenuHelp;
     break; 
 
   default:
@@ -118,6 +155,10 @@ void mousePressedForStateEdit() {
     }//if
   }//if
 } //func 
+
+void doCommandMouseStateWelcomeScreen(int commandNumber) {
+  state=stateMenuHelp;
+}
 
 void doCommandMouseForStateEdit(int commandNumber) {
 
@@ -308,6 +349,12 @@ void doCommandMouseHelp(int commandNumber) {
       tboxHelp.start=0;
     break;
 
+  case 2: 
+    stateText=""; 
+    previousState=stateMenuHelp;
+    state=stateMenuHelp; 
+    break; 
+
   default:
     println ("Error 289: unknown command int: "
       +commandNumber); 
@@ -315,6 +362,61 @@ void doCommandMouseHelp(int commandNumber) {
     break;
   }//switch
 }//func
+
+void doCommandMouseMenuHelp(int commandNumber) {
+
+  switch (commandNumber) {
+
+  case 0:
+    state=stateShowEditorHelpAsImage;
+    break;
+
+  case 1:
+    stateText=""; 
+    state=stateHelp;
+    break;
+
+  case 2:
+    stateText=""; 
+    state=stateShowButtonsInEditor;
+    break;
+
+  case 3: 
+    stateText=""; 
+    state=stateManuallyHelp;
+    break; 
+
+  case 4: 
+    // back to welcome screen
+    stateText=""; 
+    previousState=-1; 
+    state=stateWelcomeScreen;
+    break;
+
+  case 5: 
+    // Go to the Turtle Editor
+    stateText=""; 
+    previousState=-1; 
+    state=stateEdit;
+    break; 
+
+  case 6:
+    // Go to the Steer the Turtle Mode 
+    stateText=""; 
+    previousState=-1; 
+    state=stateManually;
+    break; 
+
+  default:
+    // Error 
+    println ("Error 2849: unknown command int: "
+      +commandNumber); 
+    exit(); 
+    break;
+  }//switch
+}//func
+
+// -----------------------------------------------------------
 
 void mouseWheel(MouseEvent event) {
   if (state==stateEdit) {

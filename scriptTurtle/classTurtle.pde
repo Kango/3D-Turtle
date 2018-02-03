@@ -81,6 +81,16 @@ class Turtle {
   // this HashMap stores legs, eyes etc. of the Turtle so you can change their color individually 
   HashMap<String, PShape> hmTurtleBodyShapes = new HashMap<String, PShape>();
 
+  // this monitors the angles 
+  float monitorAngleX;///==???
+  float monitorAngleY;///==???
+  float monitorAngleZ;///==???
+
+  // this monitors the position 
+  float monitorPosX=0;///==???
+  float monitorPosY=0;///==???
+  float monitorPosZ=0;///==???
+
   // ---------------------------------------------------------------------
 
   // The topic Path Recording -----------------
@@ -89,7 +99,8 @@ class Turtle {
   boolean suppressPath=false; 
   String currentNamePathRecording = "";   
 
-  // ------------------------------------------------------------
+  // ---------------------------------------------------------------------
+
   // constructor
   Turtle () {
 
@@ -141,11 +152,11 @@ class Turtle {
     // 4.
     // We define some math constants as variables 
     // Putting key-value pairs in the HashMap
-    fdVariables.set ("PI", PI); // hashmap
-    fdVariables.set ("TWO_PI", TWO_PI); // hashmap
-    fdVariables.set ("HALF_PI", HALF_PI); // hashmap
-    fdVariables.set ("QUARTER_PI", QUARTER_PI); // hashmap
-    fdVariables.set ("TAU", TAU); // hashmap
+    fdVariables.set ("PI", PI);           
+    fdVariables.set ("TWO_PI", TWO_PI); 
+    fdVariables.set ("HALF_PI", HALF_PI); 
+    fdVariables.set ("QUARTER_PI", QUARTER_PI);
+    fdVariables.set ("TAU", TAU); 
     //
   } // constructor 
 
@@ -153,13 +164,15 @@ class Turtle {
   // the typical core Turtle functions 
 
   // functions for Drawing (forward) and jumping (forwardJump) :  
-  //  * drawing normally draws and moves the turtle (unless penDown is false).
-  //  * jumping NEVER draws and only moves the turtle (penDown is preserved)
+  //   * drawing normally draws and moves the turtle (unless penDown is false).
+  //   * jumping NEVER draws and only moves the turtle (penDown is preserved)
 
   void forward(float amount) {
 
     // drawing only when the pen is down 
     if (penDown) {
+
+      // drawing 
 
       if (lineType) {
         // normal line 
@@ -174,12 +187,14 @@ class Turtle {
           amount, 0, 0, 
           2, turtleColor);
       }
-    }//if
+    }  //if (penDown) 
 
-    // move
+    // move (no matter what the state of penDown is)
     translate(amount, 0, 0);
     if (startPathRecording)
       t.pathArrayList.add(t.pos3D());
+
+    storeModelPosition();
   }
 
   void backward(float amount) {
@@ -198,6 +213,8 @@ class Turtle {
     penDown=false; // don't  draw
     forward(amount);
     penDown=formerPenDown; // restore
+
+    storeModelPosition();
   }
 
   void backwardJump(float amount) {
@@ -230,6 +247,8 @@ class Turtle {
     translate(0, 0, -amount);
     if (startPathRecording)
       t.pathArrayList.add(t.pos3D());
+
+    storeModelPosition();
   }
 
   void rise(float amount) {
@@ -248,6 +267,8 @@ class Turtle {
     penDown=false; // don't  draw
     sink(amount);
     penDown=formerPenDown; // restore
+
+    storeModelPosition();
   }
 
   void riseJump(float amount) {
@@ -278,6 +299,7 @@ class Turtle {
 
     // move
     translate(0, amount, 0);
+    storeModelPosition();
   }
 
   // synonym 
@@ -303,6 +325,7 @@ class Turtle {
     penDown=false; // don't  draw
     sideways(amount);
     penDown=formerPenDown; // restore
+    storeModelPosition();
   }
 
   // synonym
@@ -320,30 +343,36 @@ class Turtle {
   // Yaw
   void right (float degree) {
     rotateZ(radians( degree ) );
+    monitorAngleZ+=( degree );
   }
 
   void left (float degree) {
     rotateZ( - radians( degree ) );
+    monitorAngleZ-=( degree );
   }
 
   // 3D - PITCH  
 
   void noseDown(float degree) {
     rotateY(radians(degree));
+    monitorAngleY+=( degree );
   }
 
   void noseUp(float degree) {
     rotateY( - radians(degree));
+    monitorAngleY-=( degree );
   }
 
   // 3D - ROLL  
 
   void rollRight (float degree) {
     rotateX( - radians(degree));
+    monitorAngleX-=( degree );
   }
 
   void rollLeft (float degree) {
     rotateX(radians(degree));
+    monitorAngleX+=( degree );
   }
 
   // -----------------------------------
@@ -436,6 +465,11 @@ class Turtle {
 
   void helpPrintln() {    
     println (helpText());
+
+    String helpText1 = 
+      textForManuallyHelp();
+
+    println ("\n\n"+helpText1);
   }
 
   void help() {
@@ -489,6 +523,16 @@ class Turtle {
       return true; // success
     }//if
     return false; // fail
+  }//method
+
+  // -------------------------------------------------------
+
+  void storeModelPosition() {
+
+    // the turtle is now at (0, 0, 0), store that location
+    monitorPosX = modelX(0, 0, 0);
+    monitorPosY = modelY(0, 0, 0);
+    monitorPosZ = modelZ(0, 0, 0);
   }//method
 
   // -------------------------------------------------------
@@ -840,7 +884,7 @@ class Turtle {
     a1+= ("You can now draw an image by telling the turtle where to go.\n");
     a1+= ("To draw a rectangle you would say: repeat 4 ( forward 60 right 90 ). The rotation with right / left determines in which direction the Turtle draws next.\n");
     a1+= ("You can write your Turtle Script in an Editorbox on the screen and run it by clicking the green > sign with the mouse.\n");
-    a1+= ("You can also steer the Turtle with Cursor keys directly to generate a Turtle Script.\n");
+    a1+= ("You can also steer the Turtle with Cursor keys directly to generate a Turtle Script (extra help text there).\n");
 
     a1+= ("Here you see one text box where you see a help for the current line in the editor box. \nYou see a ROLL with commands (use mouse wheel) to choose commands; \n");
     a1+= ("attached is also a small help text.\n");
@@ -892,7 +936,7 @@ class Turtle {
     a1+= ("       You can use all colors ('BLUE', '144' or '255 0 255') and the keyWords head,body,eye1,eye2,leg1,leg2,leg3,leg4 with this command.\n");  
     a1+= ("     * You can load a 3rd party shape (.obj file) with a texture (.png or .jpg file) and a scale; Example: LOADSHAPE biplane.obj diffuse_512.png 1.7   \n");  
     a1+= ("       You may change the rotation of the shape using ROTATESHAPE XRotate PI 0 // rotate the shape by x,y,z (radians)  \n");
-    a1+= ("       Examples see folder Advanced.   \n");  
+    a1+= ("       Examples see under the names \"turtle...\".   \n");  
     a1+= ("************************************************************\n\n");
     a1+= ("Additional commands  \n");
     a1+= ("     * Help to show this help \n");
@@ -922,7 +966,9 @@ class Turtle {
     a1+= ("     * showPath \tshows one shape: showPath Star. \n");
 
     a1+= ("************************************************************\n\n");
-    a1+= ("   * credits: Jeremy Douglass - thank you! \n");
+
+    a1+= ("Credits \n");
+    a1+= ("   * Jeremy Douglass - thank you! \n");
     a1+= ("     https:// forum.processing.org/two/discussion/20706/how-3d-turtle-like-in-logo-but-3d-math-problem\n");
     a1+= ("   * Thanks to Jonathan (PeasyCam)\n"); 
     a1+= ("   * Thanks to GoToLoop for the text input area\n");

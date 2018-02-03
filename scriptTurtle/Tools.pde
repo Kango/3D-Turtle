@@ -68,8 +68,6 @@ void instantiateBoxHelp() {
     color(65), // textAreaTextColor
     color(255), // textAreaBackgroundColor
     color(0, 0, 255)); // textAreaBorderColor
-
-  println(t.helpText());
 }
 
 void instantiateBoxEditMode() {
@@ -382,6 +380,7 @@ String timeNow () {
 void statusBarUpperLeftCorner(String textLocal) {
 
   // display a text in the upper left corner
+  // for stateBrowseFiles and handleStateManually
 
   noLights(); 
   camera.beginHUD();
@@ -389,16 +388,16 @@ void statusBarUpperLeftCorner(String textLocal) {
   textMode(SHAPE);
 
   // the rect of the status bar
-  fill(111); // gray 
+  fill(colDarkGray); // gray 
   noStroke(); 
   rect(0, 0, width, 30);
 
   // the text 
-  fill(0);
+  fill(255); // white
   textAlign(LEFT, BASELINE); 
-  textSize(12);
+  textSize(15); // 12 
   text(textLocal, // textForStatusBarManuallyOnTopScreen 
-    13, 17);
+    13, 20);
 
   textFont(font);
   textMode(MODEL);

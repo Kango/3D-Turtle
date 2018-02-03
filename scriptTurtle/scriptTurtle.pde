@@ -53,24 +53,30 @@ TextBoxDisplayOnly tboxHelp;
 // the states -----------------------------------------------------
 
 // program logic: states 
-final int stateWelcomeScreen = 0;  // unique numbers
-final int stateEdit          = 1; 
-final int stateRun           = 2; 
-final int stateError         = 3; 
-final int stateWaitForSave   = 4; 
-final int stateWaitForLoad   = 5;
-final int stateHelp          = 6;
-final int stateShowLogfile   = 7;
-final int stateManually      = 8; 
-final int stateManuallyHelp  = 9;
+final int stateWelcomeScreen           = 0;  // unique numbers
+final int stateEdit                    = 1; 
+final int stateRun                     = 2; 
+final int stateError                   = 3; 
+final int stateWaitForSave             = 4; 
+final int stateWaitForLoad             = 5;
+final int stateHelp                    = 6;
+final int stateShowLogfile             = 7;
+final int stateManually                = 8; 
+final int stateManuallyHelp            = 9;
 final int stateBrowseFilesStartNewFile = 10; 
 final int stateBrowseFiles             = 11; 
+final int stateMenuHelp                = 12;
+final int stateShowEditorHelpAsImage   = 13;
+final int stateShowButtonsInEditor     = 14;
 int state = stateWelcomeScreen;  // current state
+// screens Help and Help Manually can be called as normal or by the "Help Menu State"; 
+// to distinguish, we use previousState:  
+int previousState=-1; 
 
 // program version ---------------------------------------------------
 
 // program version
-final String versionString = "Version 0.1.3178";
+final String versionString = "Version 0.1.318";
 
 // For managing load and save ----------------------------------------
 
@@ -88,22 +94,27 @@ String fileName = ""; // for the dispay in edit mode
 final boolean showButtonsForDebugging = false;  
 
 // how many buttons for different  modes 
-final int btnLengthInMainMenu = 14;  // in edit mode (upper left)
-final int btnLengthInLogFile  = 4;   // log file mode: 2x scrolling
-final int btnLengthInHelp     = 2;   // Help mode: scrolling
+final int btnLengthInMainMenu        = 14;  // in edit mode (upper left) ????
+final int btnLengthInLogFile         = 4;   // log file mode: 2x scrolling
+final int btnLengthInHelp            = 3;   // Help mode: scrolling
+final int btnLengthInStateWelcome    = 1;   // welcome screen: Just the ?-Button
+final int btnLengthInStateMenuHelp   = 7;   // big green help menu 
 
 // the buttons: 
-ArrayList<RectButton> rectButtons = new ArrayList(); 
-ArrayList<RectButton> rectButtonsStateLogFile = new ArrayList(); 
-ArrayList<RectButton> rectButtonsStateHelp = new ArrayList(); 
+ArrayList<RectButton> rectButtons                    = new ArrayList(); 
+ArrayList<RectButton> rectButtonsStateLogFile        = new ArrayList(); 
+ArrayList<RectButton> rectButtonsStateHelp           = new ArrayList(); 
+ArrayList<RectButton> rectButtonsStateWelcomeScreen  = new ArrayList(); 
+ArrayList<RectButton> rectButtonsStateMenuHelp       = new ArrayList(); 
 
 boolean locked;
 
 // colors for Buttons et al. 
-final color col1 = #ff0000;
-final color col2 = #ffff00;
-final color col3 = #000000;
-final color colYellow = color(244, 244, 44);
+final color col1        = color(111); //  #ff0000;
+final color col2        = color(0);   //  #ffff00;
+final color col3        = color(0);   //  #000000;
+final color colYellow   = color(244, 244, 44);
+final color colDarkGray = color(111);
 
 // for the tool tip text  
 int timeSinceLastMouseMoved;  // store time since last mouse moved / pressed
@@ -158,6 +169,9 @@ String log="";
 // for state manually 
 String textForStatusBarManuallyOnTopScreen=""; 
 String manuallyLastCommand=""; 
+
+PImage imgShowEditorHelpAsImage;
+PImage imgSteerTurtle; 
 
 // These 2 strings are used in the editor to show unknown commands as RED 
 
@@ -224,6 +238,9 @@ void setup() {
 
   // for tool tip text
   timeSinceLastMouseMoved = millis();
+
+  imgShowEditorHelpAsImage=loadImage("screenshot Editor Help.jpg");
+  imgShowEditorHelpAsImage.resize(width-44, 0);
 } //func
 
 void draw() {

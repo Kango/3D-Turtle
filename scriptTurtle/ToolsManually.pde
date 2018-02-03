@@ -1,53 +1,10 @@
 
 // state manually : steering the turtle via Cursor keys and other keys 
 
-void handleStateManually() {
-
-  // called from stateManagement() 
-
-  if (keyPressed) {
-    keyPressedForManuallyState_ManyTimes();
-  }
-
-  avoidClipping(); 
-  lights();
-  camera.setActive(true); 
-  statusBarText = "Manual MODE. Steer the Turtle with keys. H - special Help. Use Cursor, wasd, ijkl etc. to steer Turtle. Backspace - undo. "
-    +"Mouse to rotate and pan camera (peasycam), "
-    +"Mouse wheel to zoom+-, r to reset camera, Esc to quit.";
-  background(0);
-  pushMatrix();
-  stateText="";
-  stroke(211); 
-  t.drawGridOnFloor();
-  t.setColor(color(0, 255, 0));
-  fill(t.turtleColor);  
-  t.penDown(); 
-  parser.parse(tbox1.getText());
-  t.showTurtle();
-  popMatrix();
-  // status bar (HUD) 
-  statusBar();
-  statusBarUpperLeftCorner(textForStatusBarManuallyOnTopScreen);
-}
-
-void handleStateManuallyHelp() {
-  background(0);
-  statusBarText = "Help MODE for Manual Input Mode. Space Bar to go back. ";
-  // t.help(); 
-  // status bar (HUD)
-  // display a text 
-  camera.beginHUD();
-  hint(DISABLE_DEPTH_TEST);
-  noLights();
-  textMode(SHAPE);
-
-  fill(255);
-  textMode(SHAPE);
-
-  textSize(14); 
-  String helpText1 = 
-    "Help on Manually Teach the Turtle\n\n"
+String textForManuallyHelp() {
+  return
+    "Help on Manually Teach the Turtle\nThis is a special mode where you can steer the Turtle with cursor keys and other keys.\n"
+    +"You can start it in the Turtle Editor with the icon on the right.\n\n"
     +"H - This Help\n\n"
     +"Cursor keys\n"
     +"Cursor up and down - forward and backward drawing. This can be seen after the Turtle walked several steps.\n"
@@ -65,22 +22,20 @@ void handleStateManuallyHelp() {
 
     +"Pen up and down: Space bar (pen up=don't draw) and 0 (pen down=draw). This can be seen after the Turtle walked several steps. \n\n"
 
-    +"c - comment line with // ----- \nv - REPEAT line (place closing ) later in the code) \nb - LEARN line (place closing ] later)\n\n"
+    +"C (shift-C) - comment line with // ----- \nv - REPEAT line (place closing ) later in the code) \nb - LEARN line (place closing ] later)\n\n"
+
 
     +"1, 2 and 3 - color red, green and blue \n4, 5 and 6 - box, sphere and ellipse \n\n" 
 
     +"Normal Handling of the Camera\n" 
     +"Mouse to rotate and pan camera (peasycam) \n"
     +"Mouse wheel to zoom in and out  \n"
-    +"r to reset camera\n\n"
+    +"r to reset camera\n"
+    +"c - camera mode (toggle) \n\n"
 
     +"Esc to quit  (Here and in Steer the Turtle Mode. Don't forget to save your new Turtle Sketch)";
+}//func
 
-  text( helpText1, 18, 25);
-  statusBar();
-  camera.endHUD();
-}
-//
 void insertALine(String newText, boolean isAddableCommand ) {
 
   // inserts a line "newText" at end of code
@@ -95,7 +50,7 @@ void insertALine(String newText, boolean isAddableCommand ) {
   // first check whether this command, e.g. forward 1 is the same as the last one.
   if (isAddableCommand  &&  firstWord(manuallyLastCommand).equals(firstWord(newText))) {
     // yes, equal
-    int dummy =  tbox1.currentLine-1; //     tbox1.editorArray.length-1;
+    int dummy =  tbox1.currentLine-1; 
     int result1 = int(secondWord(tbox1.editorArray[dummy].text1))+int( secondWord(newText));
     tbox1.editorArray[dummy].text1 = firstWord(newText) + " " +str(result1);
     textForStatusBarManuallyOnTopScreen=firstWord(newText) + " " +str(result1); 

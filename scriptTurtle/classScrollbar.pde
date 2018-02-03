@@ -23,7 +23,7 @@ class VScrollbar {
   boolean updated=true; 
 
   // 2 buttons for scrolling 
-  final int btnLength    = 2;   // scrolling
+  final int btnLength = 2;   // scrolling
 
   //scrolling buttons 
   ArrayList<RectButton> rectButtons = new ArrayList(); 
@@ -142,7 +142,6 @@ class VScrollbar {
     //  fill(255, 0, 0);
     //}
     fill(122); // gray
-    // stroke(0); // black
     noStroke(); 
     strokeWeight(1); 
     rect(xpos, spos, swidth, swidth);
@@ -207,7 +206,7 @@ class VScrollbar {
       break;
 
     default:
-      println ("Error 289: unknown command int: "
+      println ("Error 1289: unknown command int: "
         +commandNumber); 
       exit(); 
       break;
@@ -227,7 +226,7 @@ class VScrollbar {
   }
 
   void showButtons() { 
-    // show buttons for all states  
+    // show buttons  
 
     for (RectButton btn : rectButtons) {
       btn.update();

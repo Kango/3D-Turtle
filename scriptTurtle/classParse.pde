@@ -22,11 +22,10 @@ class Parse {
   } // CONSTRUCTOR 
 
   void initParse() {
-    //resets 
+    // resets 
     ignoreFollowingLines = false; 
     endFlag              = false;
     log=""; 
-    // hmVariables = new HashMap<String, String>();
     hmStoreTurtleMatrix = new HashMap<String, PMatrix3D>();
     hmPathRecordingShapes = new HashMap<String, PShape>();
     stack = new ArrayList();  
@@ -34,6 +33,10 @@ class Parse {
     maxLinesLoopInSteps=0;
     lastTimeLoopInSteps=millis();
     hmPathRecordingShapes.clear();
+
+    t.monitorAngleX=0;///==???
+    t.monitorAngleY=0;///==???
+    t.monitorAngleZ=0;///==???
   }
 
   void parse(String txt) {
@@ -47,6 +50,9 @@ class Parse {
       // this is line by line execution.
       // resets 
       log=""; 
+      t.monitorAngleX=0;///==???
+      t.monitorAngleY=0;///==???
+      t.monitorAngleZ=0;///==???
       // hmVariables = new HashMap<String, String>();
       hmStoreTurtleMatrix = new HashMap<String, PMatrix3D>();
       hmPathRecordingShapes = new HashMap<String, PShape>();
@@ -66,7 +72,6 @@ class Parse {
       }//while
       t.showTurtle();
       // After 1/3 of a second we want to add one more line to be executed 
-      // if (!repeatSituation)
       if (millis()-lastTimeLoopInSteps > speedLoopInSteps) {
         maxLinesLoopInSteps++;
         if (maxLinesLoopInSteps>=arrayScript.length) {
@@ -79,7 +84,9 @@ class Parse {
       // this is instantaneous running entire sketch: 
       //resets 
       log=""; 
-      // hmVariables = new HashMap<String, String>();
+      t.monitorAngleX=0;///==???
+      t.monitorAngleY=0;///==???
+      t.monitorAngleZ=0;///==???
       hmStoreTurtleMatrix = new HashMap<String, PMatrix3D>();
       hmPathRecordingShapes = new HashMap<String, PShape>();
       t.suppressPath=false; 

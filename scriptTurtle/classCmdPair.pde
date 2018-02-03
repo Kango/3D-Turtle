@@ -6,12 +6,12 @@ class CommandsWithItsHelpTexts {
 
   // pair of command (cmd) plus its help text
 
-  String cmd="";
-  String help="";
+  String cmd  = "";
+  String help = "";
 
   // not in use: 
-  String category=""; 
-  String exampleParameter=""; 
+  String category         = ""; 
+  String exampleParameter = ""; 
 
   CommandsWithItsHelpTexts(String cmd_, String help_) {
     // constr
